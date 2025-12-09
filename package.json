@@ -1,0 +1,12 @@
+{
+  "name": "mostrarinfoscreen",
+  "version": "1.0.0",
+  "description": "Sistema de notificaciones, modales inputs y tutoriales interactivos para JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["notifications", "alerts", "ui", "svg", "popup", "tutorial"],
+  "author": "Abraham de Jesús Piñirí Megret",
+  "license": "Apache-2.0"
+}
