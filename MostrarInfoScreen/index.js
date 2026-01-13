@@ -1,9 +1,3 @@
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = { MostrarInfoScreen, ICONOS_SP };
-} else {
-  window.MostrarInfoScreen = MostrarInfoScreen;
-  window.ICONOS_SP = ICONOS_SP;
-}
 function injectStyles() {
   if (document.getElementById("sp-notification-styles")) return; // evita duplicados
   const style = document.createElement("style");
@@ -590,10 +584,128 @@ const ICONOS_SP = {
 
 
 
-function MostrarInfoScreen(config) {
-    // Estilos>>
-    injectStyles();
+/**
+ * Crea un fondo según la configuración
+ * @param {Array} fondoConfig - Array de configuraciones de fondo
+ * @returns {HTMLElement} Elemento del fondo creado
+ */
+function crearFondo(fondoConfig) {
+    const backdrop = document.createElement('div');
+    backdrop.className = 'notification-backdrop';
+    backdrop.id = `backdrop-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
+    // Aplicar cada configuración de fondo en orden
+    fondoConfig.forEach((config, index) => {
+        if (config.imagen) {
+            // Fondo con imagen
+            backdrop.classList.add('backdrop-image');
+            backdrop.style.backgroundImage = `url('${config.imagen}')`;
+        }
+        
+        if (config.color) {
+            // Fondo con color
+            backdrop.classList.add('backdrop-color');
+            backdrop.style.backgroundColor = config.color;
+        }
+        
+        if (config.gradiente) {
+            // Fondo con gradiente
+            backdrop.classList.add('backdrop-gradient');
+            backdrop.style.background = config.gradiente;
+        }
+        
+        if (config.blur) {
+            // Efecto blur
+            backdrop.classList.add('backdrop-blur');
+            const blurValue = typeof config.blur === 'boolean' ? '10px' : config.blur;
+            backdrop.style.backdropFilter = `blur(${blurValue})`;
+            backdrop.style.webkitBackdropFilter = `blur(${blurValue})`;
+        }
+        
+        // Aplicar estilos personalizados
+        if (config.estilos && typeof config.estilos === 'object') {
+            Object.assign(backdrop.style, config.estilos);
+        }
+        
+        // Opacidad por defecto si no se especifica
+        if (!backdrop.style.opacity) {
+            backdrop.style.opacity = '0.85';
+        }
+    });
+    
+    // Insertar al inicio del body (detrás de todo)
+    document.body.insertBefore(backdrop, document.body.firstChild);
+    
+    // Animación de entrada
+    setTimeout(() => {
+        backdrop.classList.add('visible');
+    }, 10);
+    
+    return backdrop;
+}
+
+/**
+ * Cierra un fondo con animación
+ * @param {HTMLElement} backdrop - Elemento del fondo a cerrar
+ */
+function cerrarFondo(backdrop) {
+    if (!backdrop || !backdrop.parentNode) return;
+    
+    backdrop.classList.remove('visible');
+    backdrop.classList.add('hiding');
+    
+    setTimeout(() => {
+        if (backdrop.parentNode) {
+            backdrop.parentNode.removeChild(backdrop);
+        }
+    }, 300);
+}
+
+
+// ===== SISTEMA DE REGISTRO DE NOTIFICACIONES POR ID =====
+const NOTIFICATION_REGISTRY = new Map(); // Map<id, notificationElement>
+
+// Función para registrar notificación
+function registrarNotificacion(id, elemento, config) {
+    NOTIFICATION_REGISTRY.set(id, {
+        elemento: elemento,
+        config: config,
+        creada: Date.now()
+    });
+    
+    console.log(`📝 Notificación registrada: ${id}`, elemento);
+}
+
+// Función para obtener notificación por ID
+function obtenerNotificacion(id) {
+    return NOTIFICATION_REGISTRY.get(id);
+}
+
+// Función para eliminar registro
+function eliminarRegistro(id) {
+    NOTIFICATION_REGISTRY.delete(id);
+    console.log(`🗑️ Registro eliminado: ${id}`);
+}
+
+// Función para buscar y cerrar notificación por ID
+function cerrarNotificacionPorId(id) {
+    const registro = obtenerNotificacion(id);
+    if (!registro) {
+        console.warn(`⚠️ No se encontró notificación con ID: ${id}`);
+        return false;
+    }
+    
+    window.closeNotification(registro.elemento);
+    eliminarRegistro(id);
+    return true;
+}
+
+
+function MostrarInfoScreen(config) {
+
+    //Inyecion de css
+    injectStyles();
+
     // Crear contenedor si no existe
     let container = document.getElementById('notificationContainer');
     if (!container) {
@@ -796,14 +908,16 @@ function MostrarInfoScreen(config) {
         contentElement.appendChild(botonesContainer);
 
 
-        if (config.html) {
-            const htmlWrapper = document.createElement('div');
-            htmlWrapper.className = 'notification-html';
-            htmlWrapper.innerHTML = config.html;
-            contentElement.appendChild(htmlWrapper);
-        }
+
     }
 
+    if (config.html) {
+        const htmlWrapper = document.createElement('div');
+        htmlWrapper.className = 'notification-html';
+        htmlWrapper.innerHTML = config.html;
+        contentElement.appendChild(htmlWrapper);
+    }
+    
     // NUEVO: Control de límite de notificaciones
     const notificaciones = container.querySelectorAll('.notification');
     const maxNotificaciones = 3;
@@ -861,6 +975,106 @@ function MostrarInfoScreen(config) {
         }
     });
     
+        // ===== NUEVO: MANEJO DE FONDOS =====
+    let backdropElement = null;
+    
+    // Crear fondo si se especifica
+    if (config.fondo && Array.isArray(config.fondo)) {
+        backdropElement = crearFondo(config.fondo);
+        
+        // Vincular cierre del fondo con la notificación
+        notification.dataset.backdropId = backdropElement.id;
+        
+        // Cuando se cierre la notificación, cerrar el fondo también
+        const closeWithBackdrop = () => {
+            if (backdropElement) {
+                cerrarFondo(backdropElement);
+            }
+            closeNotification(notification);
+        };
+        
+        // Reemplazar el closeButton original
+        closeButton.addEventListener('click', closeWithBackdrop);
+        
+        // También cerrar con el backdrop si se hace click fuera
+        if (config.cerrarConClickFondo) {
+            backdropElement.addEventListener('click', closeWithBackdrop);
+        }
+    }
+
+        // ===== NUEVO: SISTEMA DE ID/TAREAS =====
+    let tieneTareaID = false;
+    let notificationId = null;
+    
+    // Procesar tareaID si existe
+    if (config.tareaID && Array.isArray(config.tareaID)) {
+        config.tareaID.forEach(tarea => {
+            if (tarea.id && tarea.operacion) {
+                tieneTareaID = true;
+                notificationId = tarea.id;
+                
+                // OPERACIÓN: CREAR (registrar)
+                if (tarea.operacion.crear === true) {
+                    // Si no tiene duración definida o es "infinito", hacerla persistente
+                    if (!config.duration || config.duration === "infinito" || config.duration === "infinity") {
+                        notification.classList.add('persistente');
+                        notification.dataset.taskId = tarea.id;
+                        
+                        // Registrar en el sistema global
+                        registrarNotificacion(tarea.id, notification, {
+                            ...config,
+                            duracionOriginal: config.duration
+                        });
+                        
+                        console.log(`🆔 Notificación persistente creada: ${tarea.id}`);
+                    }
+                }
+                
+                // OPERACIÓN: CERRAR
+                if (tarea.operacion.crear === false && tarea.operacion.cerrar === true) {
+                    // Buscar y cerrar notificación existente
+                    setTimeout(() => {
+                        const cerrada = cerrarNotificacionPorId(tarea.id);
+                        
+                        // Si se cerró exitosamente y hay función para llamar
+                        if (cerrada && tarea.operacion.llamar && typeof tarea.operacion.llamar === 'function') {
+                            try {
+                                tarea.operacion.llamar();
+                            } catch (error) {
+                                console.error('Error ejecutando función de llamada:', error);
+                            }
+                        }
+                    }, 100); // Pequeño delay para asegurar que todo esté listo
+                    
+                    // No continuar creando nueva notificación si solo es para cerrar
+                    if (!tarea.operacion.llamar) {
+                        return null;
+                    }
+                }
+                
+                // OPERACIÓN: SOLO LLAMAR (sin cerrar)
+                if (tarea.operacion.crear === false && tarea.operacion.cerrar === false && tarea.operacion.llamar) {
+                    // Buscar notificación existente
+                    const registro = obtenerNotificacion(tarea.id);
+                    if (registro && typeof tarea.operacion.llamar === 'function') {
+                        try {
+                            tarea.operacion.llamar();
+                        } catch (error) {
+                            console.error('Error ejecutando función de llamada:', error);
+                        }
+                    }
+                    
+                    return registro ? registro.elemento : null;
+                }
+            }
+        });
+    }
+    
+    // Si tiene ID pero no se especificó duración, hacerla infinita
+    if (tieneTareaID && !config.duration) {
+        notification.classList.add('infinite', 'persistente');
+    }
+
     // FUNCIÓN PARA MODO ETIQUETA
     function mostrarEtiqueta(config) {
         const contenedorEtiquetas = document.getElementById('etiquetasContainer') || (() => {
@@ -933,6 +1147,21 @@ function MostrarInfoScreen(config) {
     }
 
     function closeNotification(notificationEl) {
+        // Verificar si tiene fondo vinculado
+        const backdropId = notificationEl.dataset.backdropId;
+        if (backdropId) {
+            const backdrop = document.getElementById(backdropId);
+            if (backdrop) {
+                cerrarFondo(backdrop);
+            }
+        }
+
+        // Verificar si tiene ID registrado y limpiarlo
+        const taskId = notificationEl.dataset.taskId;
+        if (taskId) {
+            eliminarRegistro(taskId);
+        }
+
         notificationEl.classList.remove('visible');
         notificationEl.classList.add('hiding');
         setTimeout(() => {
@@ -954,7 +1183,7 @@ function MostrarInfoScreen(config) {
             }
         }, 500);
     }
-    
+    window.closeNotification = closeNotification; // Exponer globalmente si es necesario
     return notification;
 }
 
@@ -1000,6 +1229,69 @@ function ejecutarMetodoGlobal(metodoString) {
         }
     });
 }
+
+
+/**
+ * API Pública para manejar notificaciones por ID
+ */
+window.Notificaciones = {
+    /**
+     * Crear notificación persistente
+     */
+    crear: function(id, config) {
+        return MostrarInfoScreen({
+            ...config,
+            tareaID: [{ id: id, operacion: { crear: true } }],
+            duration: config.duration || "infinito"
+        });
+    },
+    
+    /**
+     * Cerrar notificación por ID
+     */
+    cerrar: function(id, callback) {
+        const registro = obtenerNotificacion(id);
+        if (registro) {
+            closeNotification(registro.elemento);
+            if (callback) callback();
+            return true;
+        }
+        return false;
+    },
+    
+    /**
+     * Actualizar contenido de notificación existente
+     */
+    actualizar: function(id, nuevoContenido) {
+        const registro = obtenerNotificacion(id);
+        if (!registro || !registro.elemento) return false;
+        
+        const contentEl = registro.elemento.querySelector('.notification-content');
+        if (contentEl && nuevoContenido.text) {
+            const textEl = contentEl.querySelector('.notification-text1');
+            if (textEl) textEl.textContent = nuevoContenido.text;
+        }
+        
+        return true;
+    },
+    
+    /**
+     * Obtener todas las notificaciones activas
+     */
+    listar: function() {
+        return Array.from(NOTIFICATION_REGISTRY.keys());
+    },
+    
+    /**
+     * Cerrar todas las notificaciones persistentes
+     */
+    cerrarTodas: function() {
+        NOTIFICATION_REGISTRY.forEach((registro, id) => {
+            closeNotification(registro.elemento);
+        });
+        NOTIFICATION_REGISTRY.clear();
+    }
+};
 
 /**
  * Muestra una notificación en pantalla con imagen, audio y texto
