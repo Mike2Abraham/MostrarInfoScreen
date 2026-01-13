@@ -540,4 +540,49 @@ width: 97%;
     display: flex;
     align-items: center;
     justify-content: center;
+
+}
+/* ===== FONDOS DE NOTIFICACIÓN ===== */
+.notification-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999999999999999998; /* Un nivel debajo de las notificaciones */
+    pointer-events: all;
+    transition: opacity 0.3s ease;
+}
+
+/* Fondo de color */
+.backdrop-color {
+    background-color: #161616d9;
+}
+
+/* Fondo de imagen */
+.backdrop-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Efecto blur detrás (moderno) */
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Fondo con gradiente */
+.backdrop-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Estados */
+.notification-backdrop.visible {
+    opacity: 1;
+}
+
+.notification-backdrop.hiding {
+    opacity: 0;
+    pointer-events: none;
 }
