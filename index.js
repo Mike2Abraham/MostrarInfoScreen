@@ -1,8 +1,924 @@
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = { MostrarInfoScreen, ICONOS_SP };
-} else {
-  window.MostrarInfoScreen = MostrarInfoScreen;
-  window.ICONOS_SP = ICONOS_SP;
+function injectStyles() {
+  if (document.getElementById("sp-notification-styles")) return; // evita duplicados
+  const style = document.createElement("style");
+  style.id = "sp-notification-styles";
+  style.textContent = `
+    @font-face {
+        font-family: 'Inter';
+        src: url('./Nacional.ttf') format('truetype');
+    }
+
+
+    .notification-container {
+        color: #e2e8f0; 
+        font-family: 'Inter', 'notoemoji', sans-serif;
+        position: fixed;
+        top: 51px;
+        right: 20px;
+        z-index: 9999999999999;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        overflow: hidden;
+        border-radius: 15px;
+    }
+
+/* Contenedor con scroll suave */
+.notification-container.multiple-notifications {
+    max-height: 85vh;
+    scroll-behavior: smooth;
+}
+.notification {
+    background: rgb(28 28 28 / 57%);
+    border-left: 7px solid #6b46c1;
+    border-radius: 8px;
+    padding: 0px 7px;
+    width: 306px;
+    min-height: 68px;
+    max-height: 187px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    backdrop-filter: blur(5px);
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.5s ease, box-shadow 0.3s ease;
+    flex-direction: row;
+}
+
+.notification.visible {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification.hiding {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.notification:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.notification-img {
+    width: 71px;
+    height: 71px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex-grow: 1;
+    margin-left: 7px;
+}
+
+.notification-text {
+    margin: 0;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: revert-layer;
+    line-height: 1.4;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #ffffff;
+    align-self: flex-start;
+    transition: color 0.2s ease;
+}
+
+.notification-close:hover {
+    color: #e53e3e;
+}
+.notification-text1 {
+    font-weight: bold;
+        margin: 4px 0px;
+    font-size: 14px;
+}
+
+.notification-text2 {
+    font-size: 12px;
+        margin: 4px 0px;
+    color: #aaa;
+}
+
+.notification-text3 {
+    font-size: 11px;
+        margin: 4px 0px;
+    color: #a9a9a9;
+    font-style: italic;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.notification.pulse {
+    animation: pulse 0.5s ease;
+}
+
+.notification-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    flex-direction: row;
+    align-items: center;
+}
+
+.notification-button {
+    padding: 2px 2px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 90px;
+}
+
+.notification-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.notification-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.notification-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Variantes de estilo predefinidas */
+.notification-button.secundario {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.notification-button.exito {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.notification-button.peligro {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+/* MEDIA QUERIES PARA PANTALLAS PEQUEÑAS */
+@media (max-width: 350px) {
+    .notification-container {
+        right: 10px;
+        top: 35px;
+        left: 10px; /* Ocupa todo el ancho disponible */
+    }
+    
+    .notification {
+        width: auto; /* Ancho automático */
+        max-width: none; /* Remueve la restricción anterior */
+        padding: 0px 5px;
+        gap: 10px;
+        max-height: 100px;
+    }
+    
+    .notification-img {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .notification-text1 {
+        font-size: 12px;
+    }
+    
+    .notification-text2 {
+        font-size: 11px;
+    }
+    
+    .notification-text3 {
+        font-size: 9px;
+    }
+    
+    .notification-close {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 300px) {
+    .notification-container {
+        right: 5px;
+        left: 5px;
+        top: 35px;
+    }
+    
+    .notification {
+        padding: 0px 8px;
+        gap: 8px;
+        max-height: 90px;
+        border-left-width: 4px; /* Borde más delgado */
+    }
+    
+    .notification-img {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .notification-text1 {
+        font-size: 11px;
+    }
+    
+    .notification-text2 {
+        font-size: 10px;
+    }
+    
+    .notification-text3 {
+        font-size: 8px;
+    }
+    
+    .notification-text {
+        font-size: 12px;
+        line-height: 1.3;
+    }
+}
+.notification-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999999999999999998;
+    pointer-events: all;
+    transition: opacity 0.3s ease;
+}
+
+.backdrop-color {
+    background-color: #161616d9;
+}
+
+.backdrop-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.backdrop-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.notification-backdrop.visible {
+    opacity: 1;
+}
+
+.notification-backdrop.hiding {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Botón "Cerrar todas" */
+.close-all-btn {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    z-index: 9999999999;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    border: none;
+    width: 138px;
+    padding: 8px 16px;
+    border-radius: 11px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+    transition: all 0.3s ease;
+}
+
+.close-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.6);
+}
+
+/* Scroll personalizado (ocultar barras pero permitir rueda) */
+.notification-container.multiple-notifications::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+.notification-container.multiple-notifications {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* CONTENEDOR DE ETIQUETAS */
+.etiquetas-container {
+    position: fixed;
+    z-index: 10000;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+}
+
+/* POSICIONES */
+.etiqueta-top { top: 41px; left: 50%; transform: translateX(-50%); }
+.etiqueta-bottom { bottom: 20px; left: 50%; transform: translateX(-50%); }
+.etiqueta-left { left: 20px; top: 50%; transform: translateY(-50%); }
+.etiqueta-right { right: 20px; top: 50%; transform: translateY(-50%); }
+.etiqueta-center { 
+    bottom: 20px; 
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* ESTILO DE ETIQUETA MINIMALISTA */
+.etiqueta {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    position: fixed;
+    padding: 8px 16px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 19px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    pointer-events: all;
+    cursor: pointer;
+    transition: all 1.0s ease;
+}
+
+.etiqueta.visible {
+    opacity: 1;
+    max-width: 678px;
+}
+
+.etiqueta:hover {
+    border: 1px solid red;
+    background: rgba(0, 0, 0, 0.175);
+}
+
+/* IMAGEN DEL TAMAÑO DE EMOJI */
+.etiqueta-img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+/* TEXTO DE UNA LÍNEA */
+.etiqueta-texto {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 273px;
+}
+
+/* NUEVOS ESTILOS PARA PARÁMETRO DIALOGO */
+
+/* Diálogo en posición ARRIBA */
+.notification.dialogo-arriba {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    width: 600px !important;
+    max-height: 70vh !important;
+    z-index: 10000;
+}
+
+.notification.dialogo-arriba.visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+.notification.dialogo-arriba.hiding {
+    transform: translateX(-50%) translateY(-100%);
+}
+
+/* Diálogo en posición ABAJO */
+.notification.dialogo-abajo {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    width: 600px !important;
+    max-height: 70vh !important;
+    z-index: 10000;
+}
+
+.notification.dialogo-abajo.visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+.notification.dialogo-abajo.hiding {
+    transform: translateX(-50%) translateY(100%);
+}
+
+/* Diálogo en posición IZQUIERDA */
+.notification.dialogo-izquierda {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    transform: translateX(-100%);
+    width: 500px !important;
+    max-height: 80vh !important;
+    z-index: 10000;
+}
+
+.notification.dialogo-izquierda.visible {
+    transform: translateX(0);
+}
+
+.notification.dialogo-izquierda.hiding {
+    transform: translateX(-100%);
+}
+
+/* Diálogo en posición CENTRO */
+.notification.dialogo-centro {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    width: 600px !important;
+    max-height: 80vh !important;
+    z-index: 10000;
+    opacity: 0;
+}
+
+.notification.dialogo-centro.visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.notification.dialogo-centro.hiding {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+}
+
+/* Estilos para imágenes más grandes en diálogos */
+.notification.dialogo-arriba .notification-img,
+.notification.dialogo-abajo .notification-img,
+.notification.dialogo-izquierda .notification-img,
+.notification.dialogo-centro .notification-img {
+    width: 140px !important;
+    height: 140px !important;
+    object-fit: cover !important;
+    border-radius: 8px !important;
+}
+
+/* Textos más grandes para diálogos */
+.notification.dialogo-arriba .notification-text1,
+.notification.dialogo-abajo .notification-text1,
+.notification.dialogo-izquierda .notification-text1,
+.notification.dialogo-centro .notification-text1 {
+    font-size: 18px !important;
+    font-weight: bold;
+}
+
+.notification.dialogo-arriba .notification-text2,
+.notification.dialogo-abajo .notification-text2,
+.notification.dialogo-izquierda .notification-text2,
+.notification.dialogo-centro .notification-text2 {
+    font-size: 16px !important;
+}
+
+.notification.dialogo-arriba .notification-text3,
+.notification.dialogo-abajo .notification-text3,
+.notification.dialogo-izquierda .notification-text3,
+.notification.dialogo-centro .notification-text3 {
+    font-size: 14px !important;
+}
+
+/* Indicador visual para notificaciones infinitas */
+.notification.infinite {
+    border-left-color: #ff6b6b !important;
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+}
+
+.notification.infinite::after {
+    content: "∞";
+    position: absolute;
+    top: 5px;
+    right: 25px;
+    color: #ff6b6b;
+    font-size: 12px;
+    font-weight: bold;
+}
+/* === INPUT GENERAL PARA NOTIFICACIONES === */
+.Speed_input {
+width: 97%;
+    padding: 8px 10px;
+    margin-top: 1px;
+    height: 11px;
+    font-size: 15px;
+    color: #c5c5c5;
+    border: 2px solid #f00;
+    border-radius: 6px;
+    background: rgb(30 30 30 / 69%);
+    outline: none;
+    transition: all 0.7s ease;
+}
+
+/* Hover */
+.notification-input:hover {
+    border-color: #999;
+}
+
+/* Focus */
+.notification-input:focus {
+    border-color: #4a90e2;
+    background: #fff;
+    box-shadow: 0 0 4px rgba(74,144,226,0.5);
+}
+
+/* Password modo oscuro (si usas tema oscuro) */
+.notification.dark .notification-input {
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    border-color: #666;
+}
+.notification-emoji {
+    font-size: 70px;     /* Tamaño como PNG grande */
+    line-height: 1;
+    margin-right: 10px;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.notification-html {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.notification-svg {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+.sp-loader {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+.notification-emoji {
+    font-size: 65px;
+    margin-right: 0px;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Estilo para notificaciones arrastrables */
+.notification.arrastrable {
+    cursor: grab;
+    transition: box-shadow 0.2s ease;
+}
+
+.notification.arrastrable:active {
+    cursor: grabbing;
+}
+
+/* Efecto de sombra al arrastrar (opcional) */
+.notification.arrastrable.dragging {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    transition: none;
+}
+.notification-text4, .notification-text5, .notification-text6 {
+    font-size: 11px;
+    margin: 4px 0px;
+    color: #a9a9a9;
+    font-style: italic;
+}
+  `;
+  document.head.appendChild(style);
+}
+
+
+// ============================================
+// NORMALIZADOR BILINGÜE COMPLETO
+// ============================================
+const NORMALIZADOR = {
+    // Posiciones de diálogo (valores normalizados a clases españolas)
+    dialogo: {
+        'centro': 'centro', 'centrar': 'centro', 'medio': 'centro', 'centered': 'centro',
+        'center': 'centro',
+        'arriba': 'arriba', 'superior': 'arriba', 'top': 'arriba',
+        'abajo': 'abajo', 'inferior': 'abajo', 'bottom': 'abajo',
+        'izquierda': 'izquierda', 'left': 'izquierda',
+        'derecha': 'derecha', 'right': 'derecha'
+    },
+    
+    // Duración
+    duration: {
+        'infinito': 'infinito', 'infinity': 'infinito', 'infinite': 'infinito', 'siempre': 'infinito', 'forever': 'infinito'
+    },
+    
+    // Tipo de etiqueta
+    etiqueta: {
+        'centro': 'center', 'centrar': 'center', 'medio': 'center', 'center': 'center',
+        'arriba': 'top', 'superior': 'top', 'top': 'top',
+        'abajo': 'bottom', 'inferior': 'bottom', 'bottom': 'bottom'
+    },
+    
+    // Posición para diálogos y alias de diálogo
+    posicion: {
+        'centro': 'centro', 'center': 'centro',
+        'arriba': 'arriba', 'top': 'arriba',
+        'abajo': 'abajo', 'bottom': 'abajo',
+        'izquierda': 'izquierda', 'left': 'izquierda',
+        'derecha': 'derecha', 'right': 'derecha'
+    },
+    
+    // Tipo de input (tipo)
+    tipoInput: {
+        'texto': 'text', 'text': 'text',
+        'clave': 'password', 'contraseña': 'password', 'password': 'password',
+        'numero': 'number', 'number': 'number',
+        'email': 'email', 'correo': 'email',
+        'telefono': 'tel', 'tel': 'tel'
+    },
+    
+    // Alineación de texto
+    alinear: {
+        'centro': 'center', 'centrar': 'center', 'center': 'center',
+        'izquierda': 'left', 'left': 'left',
+        'derecha': 'right', 'right': 'right',
+        'justificado': 'justify', 'justify': 'justify'
+    },
+    
+    // Dirección de scroll o animación
+    direccion: {
+        'arriba': 'up', 'up': 'up',
+        'abajo': 'down', 'down': 'down',
+        'izquierda': 'left', 'left': 'left',
+        'derecha': 'right', 'right': 'right'
+    },
+    
+    // Tamaños comunes
+    tamaño: {
+        'pequeño': 'small', 'pequeno': 'small', 'small': 'small',
+        'mediano': 'medium', 'medium': 'medium',
+        'grande': 'large', 'large': 'large'
+    },
+    
+    // Estado/condición
+    estado: {
+        'exito': 'success', 'éxito': 'success', 'success': 'success',
+        'error': 'error', 'fail': 'error',
+        'advertencia': 'warning', 'warning': 'warning',
+        'info': 'info', 'informacion': 'info'
+    },
+    
+    // Botones comunes
+    boton: {
+        'aceptar': 'accept', 'ok': 'accept', 'accept': 'accept',
+        'cancelar': 'cancel', 'cancel': 'cancel',
+        'cerrar': 'close', 'close': 'close',
+        'guardar': 'save', 'save': 'save',
+        'eliminar': 'delete', 'borrar': 'delete', 'delete': 'delete'
+    }
+};
+
+const CONFIG_KEY_ALIASES = {
+    // Texto / imagen / multimedia
+    'texto': 'text', 'text': 'text',
+    'texto2': 'text2', 'text2': 'text2',
+    'texto3': 'text3', 'text3': 'text3',
+    'imagen': 'img', 'image': 'img', 'img': 'img',
+    'audio': 'audio', 'sonido': 'audio',
+    
+    // Duración / tiempo
+    'duracion': 'duration', 'duration': 'duration', 'tiempo': 'duration', 'time': 'duration',
+    
+    // Diálogo / posición
+    'dialogo': 'dialogo', 'dialog': 'dialogo', 'posicion': 'dialogo', 'position': 'dialogo',
+    
+    // Etiquetas
+    'etiqueta': 'etiqueta', 'tag': 'etiqueta', 'label': 'etiqueta',
+    
+    // Botones
+    'botones': 'botones', 'buttons': 'botones', 'boton': 'botones', 'button': 'botones',
+    
+    // Arrastre
+    'arrastrable': 'arrastrable', 'draggable': 'arrastrable', 'drag': 'arrastrable',
+    
+    // Fondos / backdrop
+    'fondo': 'fondo', 'background': 'fondo', 'backdrop': 'fondo',
+    'cerrarconclickfondo': 'cerrarConClickFondo', 'closeonbackdropclick': 'cerrarConClickFondo', 'closeonbackgroundclick': 'cerrarConClickFondo',
+    
+    // Tarea / ID
+    'tareaid': 'tareaID', 'taskid': 'tareaID', 'taskId': 'tareaID',
+    
+    // Iconos
+    'icono': 'icono', 'icon': 'icono',
+    
+    // Estilos
+    'estilos': 'estilos', 'styles': 'estilos',
+    
+    // HTML / emoji
+    'html': 'html', 'emoji': 'emoji',
+    
+    // Input
+    'input': 'input',
+    
+    // Otros valores que pueden usarse como alias
+    'cerrarconclickfondo': 'cerrarConClickFondo'
+};
+
+const BUTTON_KEY_ALIASES = {
+    'texto': 'texto', 'text': 'texto',
+    'accion': 'accion', 'action': 'accion',
+    'cargando': 'cargando', 'loading': 'cargando',
+    'cerraralcompletar': 'cerrarAlCompletar', 'closeoncomplete': 'cerrarAlCompletar',
+    'estilos': 'estilos', 'styles': 'estilos', 'style': 'estilos',
+    'onerror': 'onError'
+};
+
+const INPUT_KEY_ALIASES = {
+    'tipo': 'tipo', 'type': 'tipo',
+    'valorinicial': 'valorInicial', 'initialvalue': 'valorInicial', 'value': 'valorInicial',
+    'placeholder': 'placeholder',
+    'id': 'id'
+};
+
+const FONDO_KEY_ALIASES = {
+    'imagen': 'imagen', 'image': 'imagen',
+    'color': 'color',
+    'gradiente': 'gradiente', 'gradient': 'gradiente',
+    'blur': 'blur',
+    'estilos': 'estilos', 'styles': 'estilos', 'style': 'estilos'
+};
+
+const TASK_KEY_ALIASES = {
+    'operacion': 'operacion', 'operation': 'operacion',
+    'crear': 'crear', 'create': 'crear',
+    'cerrar': 'cerrar', 'close': 'cerrar',
+    'llamar': 'llamar', 'call': 'llamar'
+};
+
+const BOOLEAN_KEYS = new Set([
+    'arrastrable',
+    'cerrarConClickFondo',
+    'cerrarAlCompletar',
+    'crear',
+    'cerrar'
+]);
+
+/**
+ * Normaliza un objeto completo (recursivo para objetos anidados)
+ * Convierte cualquier valor en español a inglés y normaliza claves bilingües
+ */
+function normalizarConfig(config, parentKey = null) {
+    if (!config || typeof config !== 'object') return config;
+    
+    // Si es array, normalizar cada elemento usando el padre actual
+    if (Array.isArray(config)) {
+        return config.map(item => normalizarConfig(item, parentKey));
+    }
+    
+    const resultado = {};
+    
+    for (const [rawKey, value] of Object.entries(config)) {
+        const keyLower = String(rawKey).toLowerCase();
+        const isStyleObject = parentKey === 'estilos' || parentKey === 'styles';
+        let keyNormalizada = isStyleObject ? rawKey : (CONFIG_KEY_ALIASES[keyLower] || rawKey);
+
+        if (!isStyleObject) {
+            if (parentKey === 'botones') {
+                keyNormalizada = BUTTON_KEY_ALIASES[keyLower] || keyNormalizada;
+            } else if (parentKey === 'input') {
+                keyNormalizada = INPUT_KEY_ALIASES[keyLower] || keyNormalizada;
+            } else if (parentKey === 'fondo') {
+                keyNormalizada = FONDO_KEY_ALIASES[keyLower] || keyNormalizada;
+            } else if (parentKey === 'tareaID') {
+                keyNormalizada = TASK_KEY_ALIASES[keyLower] || keyNormalizada;
+            } else if (parentKey === 'operacion') {
+                keyNormalizada = TASK_KEY_ALIASES[keyLower] || keyNormalizada;
+            }
+        }
+
+        let valorNormalizado = value;
+
+        if (typeof value === 'object' && value !== null) {
+            valorNormalizado = normalizarConfig(value, keyNormalizada);
+        }
+
+        if (typeof value === 'string') {
+            const lowerValue = value.toLowerCase();
+
+            if (BOOLEAN_KEYS.has(keyNormalizada)) {
+                if (lowerValue === 'true' || lowerValue === 'verdadero') {
+                    valorNormalizado = true;
+                } else if (lowerValue === 'false' || lowerValue === 'falso') {
+                    valorNormalizado = false;
+                }
+            }
+
+            switch (keyNormalizada) {
+                case 'dialogo':
+                    if (NORMALIZADOR.dialogo[lowerValue]) {
+                        valorNormalizado = NORMALIZADOR.dialogo[lowerValue];
+                    }
+                    break;
+
+                case 'duration':
+                    if (NORMALIZADOR.duration[lowerValue]) {
+                        valorNormalizado = NORMALIZADOR.duration[lowerValue];
+                    }
+                    break;
+
+                case 'etiqueta':
+                    if (NORMALIZADOR.etiqueta[lowerValue]) {
+                        valorNormalizado = NORMALIZADOR.etiqueta[lowerValue];
+                    }
+                    break;
+
+                case 'alinear':
+                case 'align':
+                    if (NORMALIZADOR.alinear[lowerValue]) {
+                        valorNormalizado = NORMALIZADOR.alinear[lowerValue];
+                    }
+                    break;
+
+                case 'posicion':
+                case 'position':
+                    if (NORMALIZADOR.posicion[lowerValue]) {
+                        valorNormalizado = NORMALIZADOR.posicion[lowerValue];
+                    }
+                    break;
+
+                case 'direccion':
+                case 'direction':
+                    if (NORMALIZADOR.direccion[lowerValue]) {
+                        valorNormalizado = NORMALIZADOR.direccion[lowerValue];
+                    }
+                    break;
+
+                case 'tamaño':
+                case 'size':
+                    if (NORMALIZADOR.tamaño[lowerValue]) {
+                        valorNormalizado = NORMALIZADOR.tamaño[lowerValue];
+                    }
+                    break;
+
+                case 'estado':
+                case 'status':
+                    if (NORMALIZADOR.estado[lowerValue]) {
+                        valorNormalizado = NORMALIZADOR.estado[lowerValue];
+                    }
+                    break;
+
+                case 'tipo':
+                    if (NORMALIZADOR.tipoInput[lowerValue]) {
+                        valorNormalizado = NORMALIZADOR.tipoInput[lowerValue];
+                    }
+                    break;
+            }
+        }
+
+        if (keyNormalizada === 'botones' && Array.isArray(valorNormalizado)) {
+            valorNormalizado = valorNormalizado.map(boton => {
+                if (boton && typeof boton === 'object') {
+                    const botonNorm = normalizarConfig(boton, 'botones');
+                    if (botonNorm.texto && typeof botonNorm.texto === 'string') {
+                        const textoLower = botonNorm.texto.toLowerCase();
+                        if (NORMALIZADOR.boton[textoLower]) {
+                            botonNorm._tipoNormalizado = NORMALIZADOR.boton[textoLower];
+                        }
+                    }
+                    return botonNorm;
+                }
+                return boton;
+            });
+        }
+
+        resultado[keyNormalizada] = valorNormalizado;
+    }
+    
+    return resultado;
 }
 
 // ---- ICONOS SISTEMA (SVG + PNG BASE64) ----
@@ -39,7 +955,255 @@ const ICONOS_SP = {
 
 
 
+/**
+ * Crea un fondo según la configuración
+ * @param {Array} fondoConfig - Array de configuraciones de fondo
+ * @returns {HTMLElement} Elemento del fondo creado
+ */
+function crearFondo(fondoConfig) {
+    const backdrop = document.createElement('div');
+    backdrop.className = 'notification-backdrop';
+    backdrop.id = `backdrop-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Aplicar cada configuración de fondo en orden
+    fondoConfig.forEach((config, index) => {
+        if (config.imagen) {
+            // Fondo con imagen
+            backdrop.classList.add('backdrop-image');
+            backdrop.style.backgroundImage = `url('${config.imagen}')`;
+        }
+        
+        if (config.color) {
+            // Fondo con color
+            backdrop.classList.add('backdrop-color');
+            backdrop.style.backgroundColor = config.color;
+        }
+        
+        if (config.gradiente) {
+            // Fondo con gradiente
+            backdrop.classList.add('backdrop-gradient');
+            backdrop.style.background = config.gradiente;
+        }
+        
+        if (config.blur) {
+            // Efecto blur
+            backdrop.classList.add('backdrop-blur');
+            const blurValue = typeof config.blur === 'boolean' ? '10px' : config.blur;
+            backdrop.style.backdropFilter = `blur(${blurValue})`;
+            backdrop.style.webkitBackdropFilter = `blur(${blurValue})`;
+        }
+        
+        // Aplicar estilos personalizados
+        if (config.estilos && typeof config.estilos === 'object') {
+            Object.assign(backdrop.style, config.estilos);
+        }
+        
+        // Opacidad por defecto si no se especifica
+        if (!backdrop.style.opacity) {
+            backdrop.style.opacity = '0.85';
+        }
+    });
+    
+    // Insertar al inicio del body (detrás de todo)
+    document.body.insertBefore(backdrop, document.body.firstChild);
+    
+    // Animación de entrada
+    setTimeout(() => {
+        backdrop.classList.add('visible');
+    }, 10);
+    
+    return backdrop;
+}
+
+/**
+ * Cierra un fondo con animación
+ * @param {HTMLElement} backdrop - Elemento del fondo a cerrar
+ */
+function cerrarFondo(backdrop) {
+    if (!backdrop || !backdrop.parentNode) return;
+    
+    backdrop.classList.remove('visible');
+    backdrop.classList.add('hiding');
+    
+    setTimeout(() => {
+        if (backdrop.parentNode) {
+            backdrop.parentNode.removeChild(backdrop);
+        }
+    }, 300);
+}
+
+
+// ===== SISTEMA DE REGISTRO DE NOTIFICACIONES POR ID =====
+const NOTIFICATION_REGISTRY = new Map(); // Map<id, notificationElement>
+
+// Función para registrar notificación
+function registrarNotificacion(id, elemento, config) {
+    NOTIFICATION_REGISTRY.set(id, {
+        elemento: elemento,
+        config: config,
+        creada: Date.now()
+    });
+    
+    console.log(`📝 Notificación registrada: ${id}`, elemento);
+}
+
+// Función para obtener notificación por ID
+function obtenerNotificacion(id) {
+    return NOTIFICATION_REGISTRY.get(id);
+}
+
+// Función para eliminar registro
+function eliminarRegistro(id) {
+    NOTIFICATION_REGISTRY.delete(id);
+    console.log(`🗑️ Registro eliminado: ${id}`);
+}
+
+// Función para buscar y cerrar notificación por ID
+function cerrarNotificacionPorId(id) {
+    const registro = obtenerNotificacion(id);
+    if (!registro) {
+        console.warn(`⚠️ No se encontró notificación con ID: ${id}`);
+        return false;
+    }
+    
+    window.closeNotification(registro.elemento);
+    eliminarRegistro(id);
+    return true;
+}
+
+// ============================================
+// FUNCIÓN ARRASTRABLE CON PESO
+// ============================================
+function hacerArrastrable(elemento, peso = 5) {
+    if (!elemento) return;
+    
+    // Normalizar peso (0-10)
+    let pesoNormalizado = parseFloat(peso);
+    
+    // Si no es número válido o es NaN, usar 5 (neutral)
+    if (isNaN(pesoNormalizado)) {
+        pesoNormalizado = 5;
+    }
+    
+    // Limitar entre 0 y 10
+    pesoNormalizado = Math.min(10, Math.max(0, pesoNormalizado));
+    
+    // Si es decimal raro (ej: 2.2) redondear al entero más cercano
+    if (pesoNormalizado % 1 !== 0) {
+        pesoNormalizado = Math.round(pesoNormalizado);
+    }
+    
+    // Calcular factor de inercia (0 = muy liviano, 10 = muy pesado)
+    // La fórmula: cuanto más pesado, más difícil mover
+    const factorInercia = pesoNormalizado / 10; // 0 a 1
+    const resistencia = 0.3 + (factorInercia * 0.6); // 0.3 (liviano) a 0.9 (pesado)
+    
+    let posX = 0, posY = 0;
+    let offsetX = 0, offsetY = 0;
+    let mouseX = 0, mouseY = 0;
+    let dragging = false;
+    
+    // Estilo para indicar que es arrastrable (opcional)
+    elemento.style.cursor = 'grab';
+    elemento.style.userSelect = 'none';
+    
+    const onMouseMove = (e) => {
+        if (!dragging) return;
+        e.preventDefault();
+        
+        const nextX = e.clientX - offsetX;
+        const nextY = e.clientY - offsetY;
+        const dx = (nextX - posX) * (1 - resistencia);
+        const dy = (nextY - posY) * (1 - resistencia);
+        
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        posX += dx;
+        posY += dy;
+        
+        // Limitar dentro de la ventana del navegador
+        const rect = elemento.getBoundingClientRect();
+        const maxX = window.innerWidth - rect.width;
+        const maxY = window.innerHeight - rect.height;
+        
+        posX = Math.min(maxX, Math.max(0, posX));
+        posY = Math.min(maxY, Math.max(0, posY));
+        
+        elemento.style.position = 'fixed';
+        elemento.style.left = `${posX}px`;
+        elemento.style.top = `${posY}px`;
+        elemento.style.right = 'auto';
+        elemento.style.bottom = 'auto';
+        elemento.style.margin = '0';
+    };
+    
+    const onMouseUp = () => {
+        dragging = false;
+        elemento.style.cursor = 'grab';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    };
+    
+    const onMouseDown = (e) => {
+        // Solo arrastrar con click izquierdo
+        if (e.button !== 0) return;
+        
+        // No arrastrar si se hizo clic en un botón, input, o close button
+        const target = e.target;
+        if (target.closest('.notification-button') || 
+            target.closest('.notification-close') || 
+            target.closest('input') || 
+            target.closest('button')) {
+            return;
+        }
+        
+        e.preventDefault();
+        dragging = true;
+        
+        const rect = elemento.getBoundingClientRect();
+        posX = rect.left;
+        posY = rect.top;
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        elemento.style.position = 'fixed';
+        elemento.style.left = `${posX}px`;
+        elemento.style.top = `${posY}px`;
+        elemento.style.right = 'auto';
+        elemento.style.bottom = 'auto';
+        elemento.style.margin = '0';
+        elemento.style.transform = 'none';
+        elemento.style.cursor = 'grabbing';
+        elemento.style.transition = 'none';
+        
+        // Evitar selección de texto mientras arrastra
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    };
+    
+    elemento.addEventListener('mousedown', onMouseDown);
+    
+    // Devolver función para deshabilitar arrastre si es necesario
+    return () => {
+        elemento.removeEventListener('mousedown', onMouseDown);
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    };
+}
+
+
 function MostrarInfoScreen(config) {
+
+    //Inyecion de css
+    injectStyles();
+
+    //NORMALIZAR TODO (español/inglés)
+    config = normalizarConfig(config);
+
     // Crear contenedor si no existe
     let container = document.getElementById('notificationContainer');
     if (!container) {
@@ -82,6 +1246,27 @@ function MostrarInfoScreen(config) {
     const notification = document.createElement('div');
     notification.className = 'notification';
     
+    // ===== NUEVO: HACER ARRASTRABLE =====
+    if (config.arrastrable !== undefined && config.arrastrable !== false) {
+        let peso = 5; // valor por defecto (neutral)
+        
+        if (typeof config.arrastrable === 'number') {
+            peso = config.arrastrable;
+        } else if (typeof config.arrastrable === 'string') {
+            peso = parseFloat(config.arrastrable);
+        }
+        
+        // Normalizar peso (0-10, enteros)
+        let pesoNormalizado = isNaN(peso) ? 5 : Math.min(10, Math.max(0, peso));
+        if (pesoNormalizado % 1 !== 0) pesoNormalizado = Math.round(pesoNormalizado);
+        
+        hacerArrastrable(notification, pesoNormalizado);
+        
+        // Agregar clase visual opcional para indicar que es arrastrable
+        notification.classList.add('arrastrable');
+    }
+
+
     // NUEVO: APLICAR CLASE DE DIÁLOGO SEGÚN POSICIÓN
     if (dialogo && typeof dialogo === 'string') {
         const posicionDialogo = dialogo.toLowerCase();
@@ -159,14 +1344,8 @@ function MostrarInfoScreen(config) {
        //input.className = "notification-input";
     
         // Tipo de input
-        input.type = 
-            inputConfig.tipo === "clave" ? "password" : "text";
-    
-        // Placeholder
-        if (inputConfig.placeholder)
-            input.placeholder = inputConfig.placeholder;
-    
-        // Valor inicial
+    const inputType = inputConfig.tipo || inputConfig.type;
+    input.type = inputType === "clave" || inputType === "password" ? "password" : "text";
         if (inputConfig.valorInicial)
             input.value = inputConfig.valorInicial;
     
@@ -242,14 +1421,16 @@ function MostrarInfoScreen(config) {
         contentElement.appendChild(botonesContainer);
 
 
-        if (config.html) {
-            const htmlWrapper = document.createElement('div');
-            htmlWrapper.className = 'notification-html';
-            htmlWrapper.innerHTML = config.html;
-            contentElement.appendChild(htmlWrapper);
-        }
+
     }
 
+    if (config.html) {
+        const htmlWrapper = document.createElement('div');
+        htmlWrapper.className = 'notification-html';
+        htmlWrapper.innerHTML = config.html;
+        contentElement.appendChild(htmlWrapper);
+    }
+    
     // NUEVO: Control de límite de notificaciones
     const notificaciones = container.querySelectorAll('.notification');
     const maxNotificaciones = 3;
@@ -286,9 +1467,11 @@ function MostrarInfoScreen(config) {
     void notification.offsetWidth;
     notification.classList.add('visible');
 
+    let audioElement = null;
     if (audio) {
-        const audioElement = new Audio(audio);
+        audioElement = new Audio(audio);
         audioElement.play().catch(e => console.log('No se pudo reproducir el audio:', e));
+        notification.audioElement = audioElement;
     }
     
     // MODIFICADO: NO CREAR TIMEOUT SI DURATION ES "infinito"
@@ -307,6 +1490,106 @@ function MostrarInfoScreen(config) {
         }
     });
     
+        // ===== NUEVO: MANEJO DE FONDOS =====
+    let backdropElement = null;
+    
+    // Crear fondo si se especifica
+    if (config.fondo && Array.isArray(config.fondo)) {
+        backdropElement = crearFondo(config.fondo);
+        
+        // Vincular cierre del fondo con la notificación
+        notification.dataset.backdropId = backdropElement.id;
+        
+        // Cuando se cierre la notificación, cerrar el fondo también
+        const closeWithBackdrop = () => {
+            if (backdropElement) {
+                cerrarFondo(backdropElement);
+            }
+            closeNotification(notification);
+        };
+        
+        // Reemplazar el closeButton original
+        closeButton.addEventListener('click', closeWithBackdrop);
+        
+        // También cerrar con el backdrop si se hace click fuera
+        if (config.cerrarConClickFondo) {
+            backdropElement.addEventListener('click', closeWithBackdrop);
+        }
+    }
+
+        // ===== NUEVO: SISTEMA DE ID/TAREAS =====
+    let tieneTareaID = false;
+    let notificationId = null;
+    
+    // Procesar tareaID si existe
+    if (config.tareaID && Array.isArray(config.tareaID)) {
+        config.tareaID.forEach(tarea => {
+            if (tarea.id && tarea.operacion) {
+                tieneTareaID = true;
+                notificationId = tarea.id;
+                
+                // OPERACIÓN: CREAR (registrar)
+                if (tarea.operacion.crear === true) {
+                    // Si no tiene duración definida o es "infinito", hacerla persistente
+                    if (!config.duration || config.duration === "infinito" || config.duration === "infinity") {
+                        notification.classList.add('persistente');
+                        notification.dataset.taskId = tarea.id;
+                        
+                        // Registrar en el sistema global
+                        registrarNotificacion(tarea.id, notification, {
+                            ...config,
+                            duracionOriginal: config.duration
+                        });
+                        
+                        console.log(`🆔 Notificación persistente creada: ${tarea.id}`);
+                    }
+                }
+                
+                // OPERACIÓN: CERRAR
+                if (tarea.operacion.crear === false && tarea.operacion.cerrar === true) {
+                    // Buscar y cerrar notificación existente
+                    setTimeout(() => {
+                        const cerrada = cerrarNotificacionPorId(tarea.id);
+                        
+                        // Si se cerró exitosamente y hay función para llamar
+                        if (cerrada && tarea.operacion.llamar && typeof tarea.operacion.llamar === 'function') {
+                            try {
+                                tarea.operacion.llamar();
+                            } catch (error) {
+                                console.error('Error ejecutando función de llamada:', error);
+                            }
+                        }
+                    }, 100); // Pequeño delay para asegurar que todo esté listo
+                    
+                    // No continuar creando nueva notificación si solo es para cerrar
+                    if (!tarea.operacion.llamar) {
+                        return null;
+                    }
+                }
+                
+                // OPERACIÓN: SOLO LLAMAR (sin cerrar)
+                if (tarea.operacion.crear === false && tarea.operacion.cerrar === false && tarea.operacion.llamar) {
+                    // Buscar notificación existente
+                    const registro = obtenerNotificacion(tarea.id);
+                    if (registro && typeof tarea.operacion.llamar === 'function') {
+                        try {
+                            tarea.operacion.llamar();
+                        } catch (error) {
+                            console.error('Error ejecutando función de llamada:', error);
+                        }
+                    }
+                    
+                    return registro ? registro.elemento : null;
+                }
+            }
+        });
+    }
+    
+    // Si tiene ID pero no se especificó duración, hacerla infinita
+    if (tieneTareaID && !config.duration) {
+        notification.classList.add('infinite', 'persistente');
+    }
+
     // FUNCIÓN PARA MODO ETIQUETA
     function mostrarEtiqueta(config) {
         const contenedorEtiquetas = document.getElementById('etiquetasContainer') || (() => {
@@ -379,6 +1662,28 @@ function MostrarInfoScreen(config) {
     }
 
     function closeNotification(notificationEl) {
+        // Detener audio asociado a esta notificación si existe
+        if (notificationEl.audioElement && typeof notificationEl.audioElement.pause === 'function') {
+            notificationEl.audioElement.pause();
+            notificationEl.audioElement.currentTime = 0;
+            delete notificationEl.audioElement;
+        }
+
+        // Verificar si tiene fondo vinculado
+        const backdropId = notificationEl.dataset.backdropId;
+        if (backdropId) {
+            const backdrop = document.getElementById(backdropId);
+            if (backdrop) {
+                cerrarFondo(backdrop);
+            }
+        }
+
+        // Verificar si tiene ID registrado y limpiarlo
+        const taskId = notificationEl.dataset.taskId;
+        if (taskId) {
+            eliminarRegistro(taskId);
+        }
+
         notificationEl.classList.remove('visible');
         notificationEl.classList.add('hiding');
         setTimeout(() => {
@@ -400,7 +1705,7 @@ function MostrarInfoScreen(config) {
             }
         }, 500);
     }
-    
+    window.closeNotification = closeNotification; // Exponer globalmente si es necesario
     return notification;
 }
 
@@ -447,6 +1752,74 @@ function ejecutarMetodoGlobal(metodoString) {
     });
 }
 
+
+/**
+ * API Pública para manejar notificaciones por ID
+ */
+window.Notificaciones = {
+    /**
+     * Crear notificación persistente
+     */
+    crear: function(id, config) {
+        return MostrarInfoScreen({
+            ...config,
+            tareaID: [{ id: id, operacion: { crear: true } }],
+            duration: config.duration || "infinito"
+        });
+    },
+    
+    /**
+     * Cerrar notificación por ID
+     */
+    cerrar: function(id, callback) {
+        const registro = obtenerNotificacion(id);
+        if (registro) {
+            closeNotification(registro.elemento);
+            if (callback) callback();
+            return true;
+        }
+        return false;
+    },
+    
+    /**
+     * Actualizar contenido de notificación existente
+     */
+    actualizar: function(id, nuevoContenido) {
+        const registro = obtenerNotificacion(id);
+        if (!registro || !registro.elemento) return false;
+        
+        const contentEl = registro.elemento.querySelector('.notification-content');
+        if (contentEl && nuevoContenido.text) {
+            const textEl = contentEl.querySelector('.notification-text1');
+            if (textEl) textEl.textContent = nuevoContenido.text;
+        }
+        
+        return true;
+    },
+    
+    /**
+     * Obtener todas las notificaciones activas
+     */
+    listar: function() {
+        return Array.from(NOTIFICATION_REGISTRY.keys());
+    },
+    
+    /**
+     * Cerrar todas las notificaciones persistentes
+     */
+    cerrarTodas: function() {
+        NOTIFICATION_REGISTRY.forEach((registro, id) => {
+            closeNotification(registro.elemento);
+        });
+        NOTIFICATION_REGISTRY.clear();
+    }
+};
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { MostrarInfoScreen, ICONOS_SP };
+} else {
+  window.MostrarInfoScreen = MostrarInfoScreen;
+  window.ICONOS_SP = ICONOS_SP;
+}
 /**
  * Muestra una notificación en pantalla con imagen, audio y texto
  * @param {string|Object} config - Texto del mensaje u objeto de configuración

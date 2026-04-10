@@ -1,0 +1,162 @@
+<div class="gente"></div>
+<div class="genfate"><img class="randon" src="./Sinttulo-2.png"></div>
+//npm version patch && npm publish
+<script src="./index.js"></script>
+<!--<style>
+div {
+    color: white;
+}
+.gente {
+    position: fixed;
+    background: #0000ff78;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(10px);
+    z-index: 3;
+}
+.randon {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+/* Barra de progreso para notificaciones */
+#barra-progreso-srt {
+  width: 100%;
+  background: #2d3748;
+  border-radius: 6px;
+  height: 18px;
+  margin-top: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+#progreso-srt {
+  height: 100%;
+  width: 0%;
+  background: #2dd4bf;
+  transition: width 0.2s ease;
+  border-radius: 5px;
+}
+
+#progreso-texto-srt {
+  text-align: center;
+  font-size: 13px;
+  margin-top: 4px;
+  color: #e2e8f0; 
+  font-family:'Segoe UI', sans-serif;
+}
+</style>-->
+
+<script>
+// Simular trabajo largo (ej: 5 segundos)
+let progreso = 0;
+const total = 100;
+const duracion = 5000; // 5 segundos
+const intervalo = 50; // cada 50ms
+const peticion = "archivo_2313.png"
+const peso = "200TB"
+const miniatura = "./sinttulo-2.png"
+
+// Función para actualizar la barra de progreso
+function actualizarProgreso(porcentaje) {
+  const barra = document.getElementById('progreso-srt');
+  const texto = document.getElementById('progreso-texto-srt');
+  
+  if (barra && texto) {
+    barra.style.width = porcentaje + '%';
+    texto.textContent = Math.round(porcentaje) + '%';
+  }
+}
+
+// Simulación de traducción con progreso
+async function simularTraduccion() {
+  // Mostrar notificación con barra de progreso
+
+
+  MostrarInfoScreen({
+    text: `Eliminando ${peticion}, por favor espera...`,
+    icono: 'loader',
+    dialogo: "centro",
+    tareaID: [{ id: "cualquier_cosa", operacion: { crear: true } }],
+    duration: 'infinito',
+    fondo: [
+        { color: "#6c757d", blur: "8px" }
+    ],
+    html: `
+      <div id='barra-progreso-srt' style='width:100%;background:#2d3748;border-radius:6px;height:18px;margin-top:12px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.05);'>
+        <div id='progreso-srt' style='height:100%;width:0%;background:#2dd4bf;transition:width 0.2s;'></div>
+      </div>
+      <div id='progreso-texto-srt' style='text-align:center;font-size:13px;margin-top:4px;color:#e2e8f0;'>0%</div>
+    `
+  });
+
+  return new Promise((resolve) => {
+    const paso = (total * intervalo) / duracion;
+    const timer = setInterval(() => {
+      progreso += paso;
+      if (progreso >= total) {
+        progreso = total;
+        clearInterval(timer);
+        actualizarProgreso(progreso);
+        setTimeout(() => {
+          MostrarInfoScreen({ 
+              text: `Se completo la petición, ${peticion} eliminado`, 
+              img: `${miniatura}`,
+              dialogo: "centro",
+              audio: "./ddd.mp3",
+              botones: [
+                  {
+                      texto: "🌿 Listo!",
+                      accion: () => MostrarInfoScreen({text: "🍕 Muchas gracias!!", etiqueta: "bottom" }),
+                      estilos: { background: "#6c757d" },
+                      cerrarAlCompletar: true,
+                  },
+              ],
+              tareaID: [{ id: "cualquier_cosa", operacion: { crear: false, cerrar: true } }],
+              fondo: [{ color: "#00000080", blur: "3px" }],
+              duration: 6000
+          });
+          resolve();
+        }, 300);
+      } else {
+        actualizarProgreso(progreso);
+      }
+    }, intervalo);
+  });
+}
+
+
+
+  MostrarInfoScreen({
+    text: `heeeeee!!!`,
+    icono: 'loader',
+    dialogo: "centro",
+    duration: 'infinito',
+    arrastrable: 7
+  });
+
+MostrarInfoScreen({
+    text: "¿Deseas eliminar este archivo?",
+    text2: `Pesa: ${peso} Nombre: ${peticion}`,
+    img: `${miniatura}`,
+    dialogo: "abajo",
+    botones: [
+        {
+            texto: "Cancelar",
+            accion: () => console.log("Cancelado"),
+            estilos: { background: "#6c757d" }
+        },
+        {
+            texto: "Eliminar",
+            accion: async () => await simularTraduccion(),
+            cargando: "Eliminando...",
+            cerrarAlCompletar: true,
+            estilos: { background: "#dc3545", color: "#fff" }
+        }
+    ],
+    arrastrable: 7,
+    duration: "infinito"
+});
+</script>
