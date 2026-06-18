@@ -1,0 +1,375 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    FLUJO INTERNO DE MostrarInfoScreen()                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 1. INICIO: Usuario llama a MostrarInfoScreen(config)                          │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 2. INYECCIÓN DE ESTILOS (solo 1 vez)                                          │
+│    injectNotificationStyles()                                                  │
+│    └── Crea <style id="sp-notification-styles"> con todo el CSS               │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 3. NORMALIZACIÓN DE CONFIGURACIÓN                                             │
+│    config = normalizarConfig(config)                                           │
+│    └── Convierte:                                                              │
+│        • "texto" → "text"     • "duracion" → "duration"                       │
+│        • "colortext" → "colorText"                                            │
+│        • "prioridad" → "prioridad"                                            │
+│        • "dialogo" → "center"/"top"/"bottom"...                               │
+│        • "etiqueta" → "center"/"top"/"bottom"...                              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 4. DETECCIÓN DE MODO                                                          │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ ¿config.etiqueta?                                                    │     │
+│    │   ├── SÍ → mostrarEtiqueta(config) → RETORNA (termina aquí)        │     │
+│    │   └── NO → Continúa con notificación normal                         │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 5. CREACIÓN DEL CONTENEDOR (solo 1 vez)                                       │
+│    container = document.getElementById('notificationContainer')                │
+│    └── Si no existe:                                                           │
+│        • Crea <div id="notificationContainer" class="notification-container"> │
+│        • Agrega evento wheel para scroll con rueda                            │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 6. CREACIÓN DEL ELEMENTO NOTIFICACIÓN                                         │
+│    notification = document.createElement('div')                                │
+│    notification.className = 'notification'                                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 7. APLICAR CONFIGURACIONES A LA NOTIFICACIÓN                                  │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7a. 📍 DIÁLOGO                                                       │     │
+│    │     if (config.dialogo) {                                            │     │
+│    │         notification.classList.add('dialogo')                       │     │
+│    │         notification.classList.add(config.dialogo)  // center/top... │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7b. 🖱️ ARRASTRABLE                                                  │     │
+│    │     if (config.arrastrable) {                                       │     │
+│    │         peso = parseInt(config.arrastrable) || 5                   │     │
+│    │         hacerArrastrable(notification, peso)                       │     │
+│    │         notification.classList.add('arrastrable')                  │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7c. 🔢 PRIORIDAD (z-index)                                          │     │
+│    │     if (config.prioridad) {                                         │     │
+│    │         zIndex = parseInt(config.prioridad)                         │     │
+│    │         notification.style.zIndex = zIndex                         │     │
+│    │         notification.dataset.prioridad = zIndex                    │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7d. 🎨 COLORES PERSONALIZADOS                                       │     │
+│    │     aplicarColoresPersonalizados(notification, config)             │     │
+│    │     ├── colorText → .notification-text* { color: x }              │     │
+│    │     ├── colorNotif → notification { background-color: x }         │     │
+│    │     └── colorResalte → notification { border-left-color: x }      │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7e. 📷 IMAGEN                                                        │     │
+│    │     if (config.img) {                                               │     │
+│    │         img = <img src="config.img" class="notification-img">      │     │
+│    │         notification.appendChild(img)                              │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7f. 😊 EMOJI                                                         │     │
+│    │     if (config.emoji) {                                             │     │
+│    │         emoji = <div class="notification-emoji">config.emoji</div>  │     │
+│    │         notification.appendChild(emoji)                            │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7g. 🎨 ICONO DEL SISTEMA                                             │     │
+│    │     if (config.icono && ICONOS_SP[config.icono]) {                  │     │
+│    │         if (icono === "predeterminado") {                           │     │
+│    │             img = <img src="base64">                               │     │
+│    │         } else {                                                    │     │
+│    │             svg = <div class="notification-svg">ICONOS_SP[x]</div>  │     │
+│    │         }                                                           │     │
+│    │         notification.appendChild(svg/img)                          │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7h. 📝 TEXTO (hasta 6 líneas)                                       │     │
+│    │     content = <div class="notification-content">                   │     │
+│    │     for (text1..text6) {                                           │     │
+│    │         if (line) {                                                │     │
+│    │             p = <p class="notification-textN">line</p>            │     │
+│    │             content.appendChild(p)                                │     │
+│    │         }                                                          │     │
+│    │     }                                                              │     │
+│    │     notification.appendChild(content)                              │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7i. ⌨️ INPUT                                                        │     │
+│    │     if (config.input) {                                             │     │
+│    │         input = <input class="Speed_input">                        │     │
+│    │         input.type = config.input.tipo || "text"                  │     │
+│    │         input.placeholder = config.input.placeholder              │     │
+│    │         input.id = config.input.id                                │     │
+│    │         input.value = config.input.valorInicial                   │     │
+│    │         content.appendChild(input)                                │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7j. 🔘 BOTONES                                                       │     │
+│    │     if (config.botones && Array.isArray(config.botones)) {          │     │
+│    │         botonesContainer = <div class="notification-buttons">      │     │
+│    │         for each botonConfig {                                     │     │
+│    │             boton = <button class="notification-button">           │     │
+│    │             boton.textContent = botonConfig.texto                 │     │
+│    │             if (botonConfig.estilos) applyStyles()                │     │
+│    │             boton.addEventListener('click', async () => {          │     │
+│    │                 boton.disabled = true                              │     │
+│    │                 boton.textContent = botonConfig.cargando || "..."  │     │
+│    │                 await ejecutarMetodoGlobal(botonConfig.accion)    │     │
+│    │                 if (botonConfig.cerrarAlCompletar) {              │     │
+│    │                     closeNotification(notification)               │     │
+│    │                 }                                                  │     │
+│    │             })                                                     │     │
+│    │             botonesContainer.appendChild(boton)                   │     │
+│    │         }                                                          │     │
+│    │         content.appendChild(botonesContainer)                     │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7k. 📄 HTML PERSONALIZADO                                           │     │
+│    │     if (config.html) {                                              │     │
+│    │         htmlWrapper = <div class="notification-html">              │     │
+│    │         htmlWrapper.innerHTML = config.html                       │     │
+│    │         content.appendChild(htmlWrapper)                          │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7l. ❌ BOTÓN CERRAR                                                  │     │
+│    │     closeButton = <button class="notification-close">&times;</button>│     │
+│    │     closeButton.addEventListener('click', () => {                   │     │
+│    │         closeNotification(notification)                            │     │
+│    │     })                                                              │     │
+│    │     notification.appendChild(closeButton)                          │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7m. 🔄 INFINITO (duración)                                          │     │
+│    │     if (duration === "infinito" || "infinity") {                    │     │
+│    │         notification.classList.add('infinite')                     │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+│                                    │                                            │
+│    ┌─────────────────────────────────────────────────────────────────────┐     │
+│    │ 7n. 🆔 TAREAS / ID                                                  │     │
+│    │     if (config.tareaID && Array.isArray(config.tareaID)) {          │     │
+│    │         for each tarea {                                            │     │
+│    │             if (tarea.operacion.crear) {                           │     │
+│    │                 registrarNotificacion(tarea.id, notification)      │     │
+│    │             }                                                       │     │
+│    │             if (tarea.operacion.cerrar) {                          │     │
+│    │                 cerrarNotificacionPorId(tarea.id)                  │     │
+│    │             }                                                       │     │
+│    │             if (tarea.operacion.llamar) {                          │     │
+│    │                 tarea.operacion.llamar()                           │     │
+│    │             }                                                       │     │
+│    │         }                                                           │     │
+│    │     }                                                               │     │
+│    └─────────────────────────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 8. FONDO / BACKDROP (opcional)                                                │
+│    if (config.fondo && Array.isArray(config.fondo)) {                         │
+│        backdrop = crearFondo(config.fondo)                                    │
+│        notification.dataset.backdropId = backdrop.id                          │
+│        if (config.cerrarConClickFondo) {                                      │
+│            backdrop.addEventListener('click', closeWithBackdrop)              │
+│        }                                                                      │
+│    }                                                                          │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 9. CONTROL DE MÚLTIPLES NOTIFICACIONES                                        │
+│    notificaciones = container.querySelectorAll('.notification')                │
+│    if (notificaciones.length > 3) {                                           │
+│        container.classList.add('multiple-notifications')                      │
+│        // Agregar botón "Cerrar todas (N)"                                    │
+│        closeAllBtn = <button id="closeAllNotifications">                     │
+│        container.insertBefore(closeAllBtn, container.firstChild)             │
+│    }                                                                          │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 10. REORDENAR POR PRIORIDAD                                                   │
+│     notificaciones.sort((a, b) => {                                            │
+│         return (b.dataset.prioridad || 0) - (a.dataset.prioridad || 0)        │
+│     })                                                                         │
+│     // Reinsertar en orden descendente                                        │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 11. ANIMACIÓN DE ENTRADA                                                      │
+│     void notification.offsetWidth  // Forzar reflow                           │
+│     notification.classList.add('visible')                                     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 12. AUDIO (opcional)                                                          │
+│     if (config.audio) {                                                       │
+│         audioElement = new Audio(config.audio)                                │
+│         audioElement.play()                                                   │
+│         notification.audioElement = audioElement                              │
+│     }                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 13. TIMER DE CIERRE (si NO es infinito)                                       │
+│     if (duration !== "infinito" && duration !== "infinity") {                 │
+│         timeoutId = setTimeout(() => closeNotification(notification), duration)│
+│         notification.addEventListener('mouseenter', () => clearTimeout())     │
+│         notification.addEventListener('mouseleave', () => setTimeout())       │
+│     }                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 14. RETORNO                                                                    │
+│     return notification  // Para control manual                               │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    FUNCIÓN closeNotification(notification)                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 1. Detener audio asociado                                                     │
+│    if (notification.audioElement) {                                            │
+│        notification.audioElement.pause()                                      │
+│        notification.audioElement.currentTime = 0                              │
+│    }                                                                          │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 2. Cerrar fondo (backdrop) si existe                                          │
+│    backdropId = notification.dataset.backdropId                               │
+│    if (backdropId) { cerrarFondo(backdrop) }                                  │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 3. Limpiar registro de ID (si existe)                                         │
+│    taskId = notification.dataset.taskId                                       │
+│    if (taskId) { eliminarRegistro(taskId) }                                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 4. Animación de salida                                                        │
+│    notification.classList.remove('visible')                                   │
+│    notification.classList.add('hiding')                                       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 5. Eliminar del DOM (500ms después)                                           │
+│    setTimeout(() => {                                                          │
+│        notification.parentNode.removeChild(notification)                      │
+│        // Actualizar contador de "Cerrar todas"                               │
+│    }, 500)                                                                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    FUNCIÓN mostrarEtiqueta(config)                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 1. Crear contenedor de etiquetas (solo 1 vez)                                 │
+│    etiquetasContainer = <div id="etiquetasContainer" class="etiquetas-container">│
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 2. Crear etiqueta                                                             │
+│    etiqueta = <div class="etiqueta etiqueta-${config.etiqueta}">             │
+│    if (config.img) { img = <img class="etiqueta-img"> }                       │
+│    if (config.text) { texto = <span class="etiqueta-texto"> }                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 3. Animación de entrada                                                       │
+│    setTimeout(() => etiqueta.classList.add('visible'), 400)                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 4. Timer de cierre                                                            │
+│    setTimeout(() => {                                                          │
+│        etiqueta.classList.remove('visible')                                   │
+│        setTimeout(() => etiqueta.remove(), 300)                               │
+│    }, duration)                                                               │
+└─────────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ 5. Interacciones                                                              │
+│    etiqueta.addEventListener('mouseenter', () => clearTimeout())              │
+│    etiqueta.addEventListener('mouseleave', () => setTimeout())                │
+│    etiqueta.addEventListener('click', () => { cerrar etiqueta })              │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+📊 Resumen del Flujo
+Paso	Función	Descripción
+1	MostrarInfoScreen(config)	Entrada principal
+2	injectNotificationStyles()	Inyecta CSS (1 vez)
+3	normalizarConfig(config)	Traduce español→inglés
+4	mostrarEtiqueta() o continuar	Detecta modo
+5	Crear contenedor	#notificationContainer
+6	Crear .notification	Elemento base
+7a-7n	Aplicar configuraciones	Diálogo, arrastre, colores, etc.
+8	crearFondo()	Fondo/backdrop opcional
+9	Control múltiple	Límite 3 notificaciones
+10	Reordenar por prioridad	Orden descendente
+11	Animación entrada	.visible
+12	Audio	Reproducir sonido
+13	Timer	Cierre automático
+14	return notification	Retorna elemento

@@ -1,0 +1,128 @@
+📦 MostrarInfoScreen/
+│
+├── 📄 Notificacion_SP.js          ← PUNTO DE ENTRADA PRINCIPAL
+│   ├── Importa Estilos.js         → Inyecta CSS en el DOM
+│   ├── Importa VariablesSVG.js    → Iconos del sistema
+│   ├── Importa VariablesNormalizadorBilenguaje.js → Alias bilingües
+│   ├── Importa FuncionesInternas/ → Todas las funciones auxiliares
+│   ├── Función MostrarInfoScreen(config)
+│   │   ├── Inyecta estilos CSS
+│   │   ├── Normaliza configuración (español/inglés)
+│   │   ├── Crea contenedor de notificaciones
+│   │   ├── Detecta modo etiqueta → mostrarEtiqueta()
+│   │   ├── Detecta modo diálogo → clase .dialogo
+│   │   ├── Aplica arrastrable → hacerArrastrable()
+│   │   ├── Aplica colores → colorText, colorNotif, colorResalte
+│   │   ├── Aplica prioridad (z-index) → aplicarPrioridad()
+│   │   ├── Agrega imagen/emoji/icono/html/input
+│   │   ├── Agrega botones con callbacks
+│   │   ├── Sistema de tareas/ID → tareaID
+│   │   ├── Sistema de fondos → crearFondo()
+│   │   └── Retorna elemento notification
+│   ├── window.MostrarInfoScreen    ← Expone al global
+│   └── window.Notificaciones       ← API pública
+│
+├── 📄 Estilos.js
+│   ├── fontBase64                  → Fuente Inter en Base64
+│   └── injectNotificationStyles()
+│       ├── .notification-container → Contenedor principal
+│       ├── .notification           → Notificación individual
+│       ├── .notification.visible   → Animación entrada
+│       ├── .notification.hiding    → Animación salida
+│       ├── .notification.dialogo   → Modo diálogo
+│       ├── .notification.arrastrable → Arrastrable
+│       ├── .notification-backdrop  → Fondo/backdrop
+│       ├── .etiqueta               → Modo etiqueta minimalista
+│       ├── .close-all-btn          → Botón cerrar todas
+│       ├── .Speed_input            → Input personalizado
+│       ├── .notification-emoji     → Emoji grande
+│       └── .sp-loader              → Animación spinner
+│
+├── 📄 VariablesSVG.js
+│   └── ICONOS_SP = {
+│       ├── pregunta    → SVG círculo con ?
+│       ├── error       → SVG círculo con X
+│       ├── aviso       → SVG triángulo con !
+│       ├── loader      → SVG animado (spinner)
+│       └── predeterminado → Base64 PNG (imagen por defecto)
+│   }
+│
+├── 📄 VariablesNormalizadorBilenguaje.js
+│   ├── NORMALIZADOR = {
+│   │   ├── dialogo     → centro, top, bottom, left, right...
+│   │   ├── duration    → infinito
+│   │   ├── etiqueta    → center, top, bottom
+│   │   ├── tipoInput   → text, password, number, email, tel
+│   │   ├── alinear     → center, left, right, justify
+│   │   ├── estado      → success, error, warning, info
+│   │   └── boton       → accept, cancel, close, save, delete
+│   │   }
+│   ├── CONFIG_KEY_ALIASES  → Alias para claves de configuración
+│   │   ├── texto → text, imagen → img, duracion → duration
+│   │   ├── colorText, colorNotif, colorResalte
+│   │   └── prioridad, priority, nivel, zindex
+│   ├── BUTTON_KEY_ALIASES  → texto, accion, cargando, estilos
+│   ├── INPUT_KEY_ALIASES   → tipo, valorInicial, placeholder, id
+│   ├── FONDO_KEY_ALIASES   → imagen, color, gradiente, blur
+│   ├── TASK_KEY_ALIASES    → operacion, crear, cerrar, llamar
+│   └── BOOLEAN_KEYS        → arrastrable, cerrarConClickFondo, etc.
+│
+├── 📁 FuncionesInternas/
+│   │
+│   ├── 📄 NormalizadorLenguaje.js
+│   │   └── normalizarConfig(config, parentKey)
+│   │       ├── Recursivo para objetos anidados
+│   │       ├── Convierte alias a claves normalizadas
+│   │       ├── Traduce valores (español → inglés)
+│   │       ├── Convierte strings a booleanos (true/false)
+│   │       └── Normaliza botones, inputs, fondos, tareas
+│   │
+│   ├── 📄 Config_Fondo.js
+│   │   ├── crearFondo(fondoConfig)
+│   │   │   ├── Crea .notification-backdrop
+│   │   │   ├── Aplica imagen, color, gradiente, blur
+│   │   │   ├── Aplica estilos personalizados
+│   │   │   └── Retorna elemento backdrop
+│   │   └── cerrarFondo(backdrop)
+│   │       ├── Animación de salida
+│   │       └── Elimina del DOM
+│   │
+│   ├── 📄 FuncionRegistrosID.js
+│   │   ├── NOTIFICATION_REGISTRY = new Map()
+│   │   ├── registrarNotificacion(id, elemento, config)
+│   │   ├── obtenerNotificacion(id) → registro
+│   │   ├── eliminarRegistro(id)
+│   │   └── cerrarNotificacionPorId(id) → true/false
+│   │
+│   ├── 📄 HacerArrastrable.js
+│   │   └── hacerArrastrable(elemento, peso = 5)
+│   │       ├── Calcula factor de inercia (0-10)
+│   │       ├── Captura eventos mousedown/mousemove/mouseup
+│   │       ├── Aplica resistencia al movimiento
+│   │       ├── Limita dentro de la ventana
+│   │       └── Retorna función para deshabilitar
+│   │
+│   ├── 📄 FuncionGlobalejecutarMetodo.js
+│   │   └── ejecutarMetodoGlobal(metodoString)
+│   │       ├── Parsea "miFuncion(param1, param2)"
+│   │       ├── Busca función en window
+│   │       ├── Ejecuta con parámetros parseados
+│   │       └── Retorna Promise (soporte async)
+│   │
+│   └── 📄 ApiPublica.js
+│       └── window.Notificaciones = {
+│           ├── crear(id, config)     → Notificación persistente
+│           ├── cerrar(id, callback)  → Cierra por ID
+│           ├── actualizar(id, datos) → Actualiza contenido
+│           ├── listar()              → Array de IDs activos
+│           └── cerrarTodas()         → Cierra todas
+│       }
+│
+├── 📁 Testing/
+│   ├── 📄 Ejemplos.html         → Demo visual con filtros
+│   ├── 📄 logica.js             → 30+ ejemplos de uso
+│   └── 🖼️ japan-artistic_resultado.png → Imagen de fondo
+│
+├── 📄 README.md                → Documentación completa
+├── 📄 LICENSE                  → MIT License
+└── 📄 package.json             → Metadatos del proyecto
