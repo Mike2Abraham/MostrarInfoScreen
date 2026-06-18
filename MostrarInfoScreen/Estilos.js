@@ -877,4 +877,35 @@ function aplicarColoresPersonalizados(notification, config) {
     }
 }
 
-export { injectNotificationStyles, aplicarColoresPersonalizados }
+
+/**
+ * Aplica la prioridad (z-index) a la notificación
+ * @param {HTMLElement} notification - Elemento de la notificación
+ * @param {number|string} prioridad - Valor de prioridad (número o string numérico)
+ */
+function aplicarPrioridad(notification, prioridad) {
+    // Convertir a número
+    let zIndex = parseInt(prioridad);
+    
+    // Si no es un número válido, usar 9999999999999 (predeterminado)
+    if (isNaN(zIndex)) {
+        zIndex = 9999999999999;
+    }
+    
+    // Aplicar el z-index
+    notification.style.zIndex = zIndex;
+    
+    // Guardar el valor en dataset para referencia
+    notification.dataset.prioridad = zIndex;
+    
+    // También ajustar el z-index del contenedor si es necesario
+    const container = document.getElementById('notificationContainer');
+    if (container) {
+        // Asegurar que el contenedor tenga un z-index base
+        if (!container.style.zIndex || container.style.zIndex === 'auto') {
+            container.style.zIndex = 9999999999998;
+        }
+    }
+}
+
+export { injectNotificationStyles, aplicarColoresPersonalizados, aplicarPrioridad }

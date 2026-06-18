@@ -1,4 +1,4 @@
-import { injectNotificationStyles, aplicarColoresPersonalizados } from './Estilos.js';
+import { injectNotificationStyles, aplicarColoresPersonalizados, aplicarPrioridad } from './Estilos.js';
 
 import { ICONOS_SP } from './VariablesSVG.js';
 
@@ -72,6 +72,11 @@ function MostrarInfoScreen(config) {
     // Aplicar colores personalizados si existen
     if (config.colorText || config.colorNotif || config.colorResalte) {
         aplicarColoresPersonalizados(notification, config);
+    }
+
+    // ===== APLICAR PRIORIDAD (Z-INDEX) =====
+    if (config.prioridad !== undefined && config.prioridad !== null && config.prioridad !== '') {
+        aplicarPrioridad(notification, config.prioridad);
     }
 
     // ===== NUEVO: HACER ARRASTRABLE =====

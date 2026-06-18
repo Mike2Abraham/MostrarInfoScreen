@@ -797,6 +797,500 @@ const ejemplos = [
         })
     },
 
+    // ===== NUEVOS EJEMPLOS CON COLORES =====
+{
+    id: 'colores-1',
+    categoria: 'avanzado',
+    titulo: '🎨 Colores Personalizados',
+    descripcion: 'Cambia el color del texto, fondo y borde de la notificación.',
+    codigo: `MostrarInfoScreen({
+    text: "🎨 Colores personalizados",
+    text2: "Texto dorado sobre fondo oscuro",
+    text3: "Borde rojo intenso",
+    colorText: '#ffd700',
+    colorNotif: '#1a1a2e',
+    colorResalte: '#ff6b6b',
+    duration: 5000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "🎨 Colores personalizados",
+        text2: "Texto dorado sobre fondo oscuro",
+        text3: "Borde rojo intenso",
+        colorText: '#ffd700',
+        colorNotif: '#1a1a2e',
+        colorResalte: '#ff6b6b',
+        duration: 5000
+    })
+},
+{
+    id: 'colores-2',
+    categoria: 'avanzado',
+    titulo: '🌈 Tema Éxito',
+    descripcion: 'Tema predefinido de éxito con colores verdes.',
+    codigo: `MostrarInfoScreen({
+    text: "✅ ¡Operación exitosa!",
+    text2: "Todos los datos fueron guardados",
+    colorText: '#00ff88',
+    colorNotif: 'rgba(0, 30, 20, 0.95)',
+    colorResalte: '#00ff88',
+    duration: 4000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "✅ ¡Operación exitosa!",
+        text2: "Todos los datos fueron guardados correctamente",
+        colorText: '#00ff88',
+        colorNotif: 'rgba(0, 30, 20, 0.95)',
+        colorResalte: '#00ff88',
+        duration: 4000
+    })
+},
+{
+    id: 'colores-3',
+    categoria: 'avanzado',
+    titulo: '🔥 Tema Error',
+    descripcion: 'Tema predefinido de error con colores rojos.',
+    codigo: `MostrarInfoScreen({
+    text: "❌ ¡Error crítico!",
+    text2: "No se pudo completar la operación",
+    colorText: '#ff4757',
+    colorNotif: 'rgba(30, 0, 0, 0.95)',
+    colorResalte: '#ff4757',
+    duration: 4000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "❌ ¡Error crítico!",
+        text2: "No se pudo completar la operación",
+        colorText: '#ff4757',
+        colorNotif: 'rgba(30, 0, 0, 0.95)',
+        colorResalte: '#ff4757',
+        duration: 4000
+    })
+},
+{
+    id: 'colores-4',
+    categoria: 'avanzado',
+    titulo: '💎 Tema Info',
+    descripcion: 'Tema predefinido de información con colores azules.',
+    codigo: `MostrarInfoScreen({
+    text: "ℹ️ Información importante",
+    text2: "Actualización disponible",
+    colorText: '#4facfe',
+    colorNotif: 'rgba(0, 20, 40, 0.95)',
+    colorResalte: '#4facfe',
+    duration: 4000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "ℹ️ Información importante",
+        text2: "Una nueva versión está disponible para descargar",
+        colorText: '#4facfe',
+        colorNotif: 'rgba(0, 20, 40, 0.95)',
+        colorResalte: '#4facfe',
+        duration: 4000
+    })
+},
+{
+    id: 'colores-5',
+    categoria: 'avanzado',
+    titulo: '🌙 Tema Oscuro Premium',
+    descripcion: 'Tema oscuro elegante con acentos morados.',
+    codigo: `MostrarInfoScreen({
+    text: "🌙 Modo Oscuro Premium",
+    text2: "Diseño elegante con acentos morados",
+    text3: "Ideal para apps modernas",
+    colorText: '#e2e8f0',
+    colorNotif: 'rgba(26, 26, 46, 0.95)',
+    colorResalte: '#9b59b6',
+    duration: 5000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "🌙 Modo Oscuro Premium",
+        text2: "Diseño elegante con acentos morados",
+        text3: "Ideal para aplicaciones modernas",
+        colorText: '#e2e8f0',
+        colorNotif: 'rgba(26, 26, 46, 0.95)',
+        colorResalte: '#9b59b6',
+        duration: 5000
+    })
+},
+{
+    id: 'colores-6',
+    categoria: 'avanzado',
+    titulo: '🎪 Tema Neón',
+    descripcion: 'Colores neón vibrantes para notificaciones llamativas.',
+    codigo: `MostrarInfoScreen({
+    text: "🎪 ¡Espectáculo!",
+    text2: "Colores neón muy llamativos",
+    colorText: '#ff6bff',
+    colorNotif: 'rgba(10, 0, 20, 0.95)',
+    colorResalte: '#ff6bff',
+    duration: 4000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "🎪 ¡Espectáculo!",
+        text2: "Colores neón muy llamativos",
+        colorText: '#ff6bff',
+        colorNotif: 'rgba(10, 0, 20, 0.95)',
+        colorResalte: '#ff6bff',
+        duration: 4000
+    })
+},
+{
+    id: 'colores-7',
+    categoria: 'dialogo',
+    titulo: '💬 Diálogo con Colores',
+    descripcion: 'Diálogo centrado con colores personalizados.',
+    codigo: `MostrarInfoScreen({
+    text: "💬 Diálogo Personalizado",
+    text2: "Con colores únicos",
+    dialogo: "centro",
+    colorText: '#ffffff',
+    colorNotif: 'rgba(20, 20, 40, 0.95)',
+    colorResalte: '#4facfe',
+    botones: [
+        { texto: "Aceptar", cerrarAlCompletar: true },
+        { texto: "Cancelar" }
+    ]
+});`,
+    test: () => MostrarInfoScreen({
+        text: "💬 Diálogo Personalizado",
+        text2: "Con colores únicos para destacar",
+        dialogo: "centro",
+        colorText: '#ffffff',
+        colorNotif: 'rgba(20, 20, 40, 0.95)',
+        colorResalte: '#4facfe',
+        botones: [
+            { texto: "✅ Aceptar", cerrarAlCompletar: true, estilos: { background: "#1f6feb" } },
+            { texto: "❌ Cancelar", estilos: { background: "#8b949e" } }
+        ],
+        duration: 5000
+    })
+},
+
+// ===== EJEMPLOS CON DIÁLOGOS TIPO CHAT =====
+{
+    id: 'chat-1',
+    categoria: 'dialogo',
+    titulo: '💬 Chat Izquierda',
+    descripcion: 'Simula un mensaje de chat a la izquierda (como WhatsApp).',
+    codigo: `MostrarInfoScreen({
+    text: "👤 Usuario Dice:",
+    text2: "¡Hola! ¿Cómo estás hoy?",
+    text3: "Me alegra verte",
+    dialogo: "izquierda",
+    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=user1",
+    colorText: '#e2e8f0',
+    colorNotif: 'rgba(30, 30, 50, 0.95)',
+    colorResalte: '#4facfe',
+    duration: 5000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "👤 Usuario Dice:",
+        text2: "¡Hola! ¿Cómo estás hoy?",
+        text3: "Me alegra verte por aquí",
+        dialogo: "izquierda",
+        img: "https://api.dicebear.com/7.x/avataaars/svg?seed=user1",
+        colorText: '#e2e8f0',
+        colorNotif: 'rgba(30, 30, 50, 0.95)',
+        colorResalte: '#4facfe',
+        duration: 5000
+    })
+},
+{
+    id: 'chat-2',
+    categoria: 'dialogo',
+    titulo: '💬 Chat Derecha',
+    descripcion: 'Simula un mensaje de chat a la derecha (como WhatsApp).',
+    codigo: `MostrarInfoScreen({
+    text: "🤖 Asistente:",
+    text2: "¡Hola! Estoy aquí para ayudarte",
+    text3: "¿En qué puedo asistirte?",
+    dialogo: "derecha",
+    img: "https://api.dicebear.com/7.x/bottts/svg?seed=bot",
+    colorText: '#e2e8f0',
+    colorNotif: 'rgba(20, 40, 30, 0.95)',
+    colorResalte: '#00ff88',
+    duration: 5000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "🤖 Asistente:",
+        text2: "¡Hola! Estoy aquí para ayudarte",
+        text3: "¿En qué puedo asistirte?",
+        dialogo: "derecha",
+        img: "https://api.dicebear.com/7.x/bottts/svg?seed=bot",
+        colorText: '#e2e8f0',
+        colorNotif: 'rgba(20, 40, 30, 0.95)',
+        colorResalte: '#00ff88',
+        duration: 5000
+    })
+},
+
+// ===== EJEMPLOS CON HTML AVANZADO =====
+{
+    id: 'html-1',
+    categoria: 'avanzado',
+    titulo: '📊 HTML con Tabla',
+    descripcion: 'Contenido HTML con tabla de datos.',
+    codigo: `MostrarInfoScreen({
+    text: "📊 Datos del sistema",
+    text2: "Estado de los servicios",
+    dialogo: "centro",
+    colorText: '#e2e8f0',
+    colorNotif: 'rgba(20, 20, 40, 0.95)',
+    colorResalte: '#4facfe',
+    html: \`
+        <table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:12px;">
+            <tr style="background:#1f6feb40;">
+                <th style="padding:6px;text-align:left;color:#58a6ff;">Servicio</th>
+                <th style="padding:6px;text-align:left;color:#58a6ff;">Estado</th>
+            </tr>
+            <tr><td style="padding:4px;border-bottom:1px solid #30363d;">API</td><td style="padding:4px;border-bottom:1px solid #30363d;color:#3fb950;">✅ Online</td></tr>
+            <tr><td style="padding:4px;border-bottom:1px solid #30363d;">Base de Datos</td><td style="padding:4px;border-bottom:1px solid #30363d;color:#3fb950;">✅ Online</td></tr>
+            <tr><td style="padding:4px;">Servidor Web</td><td style="padding:4px;color:#f85149;">❌ Caído</td></tr>
+        </table>
+    \`,
+    duration: 6000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "📊 Datos del sistema",
+        text2: "Estado de los servicios en tiempo real",
+        dialogo: "centro",
+        colorText: '#e2e8f0',
+        colorNotif: 'rgba(20, 20, 40, 0.95)',
+        colorResalte: '#4facfe',
+        html: `
+            <table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:12px;">
+                <tr style="background:#1f6feb40;">
+                    <th style="padding:6px;text-align:left;color:#58a6ff;">Servicio</th>
+                    <th style="padding:6px;text-align:left;color:#58a6ff;">Estado</th>
+                </tr>
+                <tr><td style="padding:4px;border-bottom:1px solid #30363d;">API REST</td><td style="padding:4px;border-bottom:1px solid #30363d;color:#3fb950;">✅ Online</td></tr>
+                <tr><td style="padding:4px;border-bottom:1px solid #30363d;">Base de Datos</td><td style="padding:4px;border-bottom:1px solid #30363d;color:#3fb950;">✅ Online</td></tr>
+                <tr><td style="padding:4px;">Servidor Web</td><td style="padding:4px;color:#f85149;">❌ Caído</td></tr>
+            </table>
+        `,
+        duration: 6000
+    })
+},
+{
+    id: 'html-2',
+    categoria: 'avanzado',
+    titulo: '🎵 HTML con Reproductor',
+    descripcion: 'Contenido HTML con botones de control de música.',
+    codigo: `MostrarInfoScreen({
+    text: "🎵 Reproductor de Música",
+    text2: "Escuchando: 'Oceans'",
+    dialogo: "centro",
+    colorText: '#e2e8f0',
+    colorNotif: 'rgba(20, 10, 30, 0.95)',
+    colorResalte: '#ff6bff',
+    html: \`
+        <div style="text-align:center;padding:10px;">
+            <div style="background:#1f6feb20;border-radius:12px;padding:15px;">
+                <p style="font-size:2rem;margin:0;">🎵</p>
+                <p style="color:#58a6ff;font-weight:bold;">Oceans - Hillsong</p>
+                <div style="display:flex;gap:15px;justify-content:center;margin-top:10px;">
+                    <span style="cursor:pointer;font-size:1.5rem;">⏪</span>
+                    <span style="cursor:pointer;font-size:1.5rem;color:#1f6feb;">⏸️</span>
+                    <span style="cursor:pointer;font-size:1.5rem;">⏩</span>
+                </div>
+                <div style="background:#30363d;border-radius:4px;height:4px;margin-top:10px;position:relative;">
+                    <div style="width:45%;height:100%;background:#1f6feb;border-radius:4px;"></div>
+                </div>
+                <p style="color:#8b949e;font-size:0.7rem;margin-top:5px;">01:45 / 04:32</p>
+            </div>
+        </div>
+    \`,
+    duration: 6000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "🎵 Reproductor de Música",
+        text2: "Escuchando: 'Oceans'",
+        dialogo: "centro",
+        colorText: '#e2e8f0',
+        colorNotif: 'rgba(20, 10, 30, 0.95)',
+        colorResalte: '#ff6bff',
+        html: `
+            <div style="text-align:center;padding:10px;">
+                <div style="background:#1f6feb20;border-radius:12px;padding:15px;">
+                    <p style="font-size:2rem;margin:0;">🎵</p>
+                    <p style="color:#58a6ff;font-weight:bold;">Oceans - Hillsong</p>
+                    <div style="display:flex;gap:15px;justify-content:center;margin-top:10px;">
+                        <span style="cursor:pointer;font-size:1.5rem;">⏪</span>
+                        <span style="cursor:pointer;font-size:1.5rem;color:#1f6feb;">⏸️</span>
+                        <span style="cursor:pointer;font-size:1.5rem;">⏩</span>
+                    </div>
+                    <div style="background:#30363d;border-radius:4px;height:4px;margin-top:10px;position:relative;">
+                        <div style="width:45%;height:100%;background:#1f6feb;border-radius:4px;"></div>
+                    </div>
+                    <p style="color:#8b949e;font-size:0.7rem;margin-top:5px;">01:45 / 04:32</p>
+                </div>
+            </div>
+        `,
+        duration: 6000
+    })
+},
+
+// ===== EJEMPLOS CON PRIORIDAD =====
+{
+    id: 'prioridad-1',
+    categoria: 'avanzado',
+    titulo: '🔴 Prioridad Máxima',
+    descripcion: 'Notificación con prioridad alta (z-index: 99999) que se superpone a todas.',
+    codigo: `MostrarInfoScreen({
+    text: "🔴 ¡ALERTA URGENTE!",
+    text2: "Esta notificación tiene prioridad máxima",
+    prioridad: 99999,
+    colorResalte: '#ff0000',
+    colorNotif: 'rgba(30, 0, 0, 0.95)',
+    colorText: '#ff0000',
+    duration: 5000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "🔴 ¡ALERTA URGENTE!",
+        text2: "Esta notificación tiene prioridad máxima",
+        prioridad: 99999,
+        colorResalte: '#ff0000',
+        colorNotif: 'rgba(30, 0, 0, 0.95)',
+        colorText: '#ff0000',
+        duration: 5000
+    })
+},
+{
+    id: 'prioridad-2',
+    categoria: 'avanzado',
+    titulo: '🟢 Prioridad Baja',
+    descripcion: 'Notificación con prioridad baja (z-index: 1) que queda debajo.',
+    codigo: `MostrarInfoScreen({
+    text: "🟢 Información normal",
+    text2: "Prioridad baja, queda debajo",
+    prioridad: 1,
+    colorResalte: '#00ff88',
+    colorNotif: 'rgba(0, 30, 20, 0.95)',
+    colorText: '#00ff88',
+    duration: 4000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "🟢 Información normal",
+        text2: "Prioridad baja, queda debajo",
+        prioridad: 1,
+        colorResalte: '#00ff88',
+        colorNotif: 'rgba(0, 30, 20, 0.95)',
+        colorText: '#00ff88',
+        duration: 4000
+    })
+},
+{
+    id: 'prioridad-3',
+    categoria: 'avanzado',
+    titulo: '📊 Comparación de Prioridades',
+    descripcion: 'Muestra dos notificaciones con diferentes prioridades para ver el efecto.',
+    codigo: `// Notificación con prioridad alta
+MostrarInfoScreen({
+    text: "🔔 ALERTA IMPORTANTE",
+    text2: "Prioridad: 100 (arriba)",
+    prioridad: 100,
+    colorResalte: '#ff6b6b',
+    colorNotif: 'rgba(30, 0, 0, 0.95)',
+    colorText: '#ff6b6b',
+    duration: 6000
+});
+
+// Notificación con prioridad baja (se muestra debajo)
+setTimeout(() => {
+    MostrarInfoScreen({
+        text: "ℹ️ Información secundaria",
+        text2: "Prioridad: 1 (abajo)",
+        prioridad: 1,
+        colorResalte: '#4facfe',
+        colorNotif: 'rgba(0, 20, 40, 0.95)',
+        colorText: '#4facfe',
+        duration: 5000
+    });
+}, 500);`,
+    test: () => {
+        // Notificación con prioridad alta
+        MostrarInfoScreen({
+            text: "🔔 ALERTA IMPORTANTE",
+            text2: "Prioridad: 100 (arriba)",
+            prioridad: 100,
+            colorResalte: '#ff6b6b',
+            colorNotif: 'rgba(30, 0, 0, 0.95)',
+            colorText: '#ff6b6b',
+            duration: 6000
+        });
+
+        // Notificación con prioridad baja (se muestra debajo)
+        setTimeout(() => {
+            MostrarInfoScreen({
+                text: "ℹ️ Información secundaria",
+                text2: "Prioridad: 1 (abajo)",
+                prioridad: 1,
+                colorResalte: '#4facfe',
+                colorNotif: 'rgba(0, 20, 40, 0.95)',
+                colorText: '#4facfe',
+                duration: 5000
+            });
+        }, 500);
+    }
+},
+{
+    id: 'prioridad-4',
+    categoria: 'dialogo',
+    titulo: '💬 Diálogo con Prioridad',
+    descripcion: 'Diálogo centrado con prioridad alta para que siempre esté visible.',
+    codigo: `MostrarInfoScreen({
+    text: "💬 Diálogo Prioridad",
+    text2: "Siempre visible por encima",
+    dialogo: "centro",
+    prioridad: 999999,
+    colorText: '#ffffff',
+    colorNotif: 'rgba(20, 20, 40, 0.95)',
+    colorResalte: '#4facfe',
+    botones: [
+        { texto: "✅ Aceptar", cerrarAlCompletar: true }
+    ],
+    duration: "infinito"
+});`,
+    test: () => MostrarInfoScreen({
+        text: "💬 Diálogo Prioridad",
+        text2: "Siempre visible por encima",
+        dialogo: "centro",
+        prioridad: 999999,
+        colorText: '#ffffff',
+        colorNotif: 'rgba(20, 20, 40, 0.95)',
+        colorResalte: '#4facfe',
+        botones: [
+            { texto: "✅ Aceptar", cerrarAlCompletar: true, estilos: { background: "#1f6feb" } }
+        ],
+        duration: "infinito"
+    })
+},
+
+// ===== EJEMPLOS CON EMOJI Y COLOR =====
+{
+    id: 'emoji-color',
+    categoria: 'basico',
+    titulo: '😊 Emoji con Color',
+    descripcion: 'Emoji grande combinado con colores personalizados.',
+    codigo: `MostrarInfoScreen({
+    text: "¡Bienvenido!",
+    text2: "Has iniciado sesión correctamente",
+    emoji: "😊",
+    colorText: '#4facfe',
+    colorNotif: 'rgba(0, 20, 40, 0.95)',
+    colorResalte: '#4facfe',
+    duration: 4000
+});`,
+    test: () => MostrarInfoScreen({
+        text: "¡Bienvenido!",
+        text2: "Has iniciado sesión correctamente",
+        emoji: "😊",
+        colorText: '#4facfe',
+        colorNotif: 'rgba(0, 20, 40, 0.95)',
+        colorResalte: '#4facfe',
+        duration: 4000
+    })
+},
     // ===== FONDOS =====
     {
         id: 'fondo-1',
