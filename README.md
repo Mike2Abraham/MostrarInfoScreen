@@ -23,6 +23,16 @@ Una librería de notificaciones versátil y potente para aplicaciones web con so
 
 ## ✨ Características Principales
 
+# IMPORTANTE:
+
+PARA EL CASO DE USAR EN LOCAL SIN SERVER IMPORTAR EL:
+
+Notificacion-SP.js <<< <scriptsrc="./MostrarInfoScreen/Notificacion-SP.js">`</script> `
+PARA SERVER Y OTROS USOS EN WEN:
+
+Notificacion_SP.js <<  `<script type="module" src="../MostrarInfoScreen/Notificacion_SP.js"></script>`
+
+
 * ✅ **Notificaciones estándar** con texto múltiple (hasta 6 líneas)
 * ✅ **Modo etiqueta** minimalista para mensajes rápidos
 * ✅ **Sistema de iconos** SVG integrados (pregunta, error, aviso, loader)
@@ -36,6 +46,17 @@ Una librería de notificaciones versátil y potente para aplicaciones web con so
 * ✅ **API pública** para control programático
 
 ## 📦 Instalación
+
+
+
+# IMPORTANTE:
+
+PARA EL CASO DE USAR EN LOCAL SIN SERVER IMPORTAR EL:
+
+Notificacion-SP.js <<< <scriptsrc="./MostrarInfoScreen/Notificacion-SP.js">`</script> `
+PARA SERVER Y OTROS USOS EN WEN:
+
+Notificacion_SP.js <<  `<script type="module" src="../MostrarInfoScreen/Notificacion_SP.js"></script>`
 
 ### Método 1: Inclusión directa
 
@@ -659,7 +680,6 @@ MostrarInfoScreen({
     ]
 });
 ```
-
 
 ### Sistema de Progreso
 
