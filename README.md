@@ -84,7 +84,7 @@ MostrarInfoScreen({
 });
 ```
 
-##  Parámetros Completos
+## Parámetros Completos
 
 ### Estructura básica
 
@@ -342,7 +342,7 @@ MostrarInfoScreen({
 });
 ```
 
-##  Sistema de Tareas/IDs
+## Sistema de Tareas/IDs
 
 ### Notificaciones persistentes
 
@@ -584,6 +584,8 @@ async function iniciarDescarga(archivo) {
 **javascript**
 
 ```
+
+
 function mostrarMensajeChat(usuario, mensaje, avatar, lado = "izquierda") {
     MostrarInfoScreen({
         text: `${usuario}:`,
@@ -601,6 +603,63 @@ function mostrarMensajeChat(usuario, mensaje, avatar, lado = "izquierda") {
 mostrarMensajeChat("Juan", "¡Hola! ¿Cómo estás?", "./avatars/juan.png", "izquierda");
 mostrarMensajeChat("Sistema", "Todo funciona correctamente", null, "derecha");
 ```
+
+### Cambiar Colores
+
+javascript
+
+```
+// Notificación con colores personalizados
+MostrarInfoScreen({
+    text: "¡Hola mundo!",
+    text2: "Este es un texto con colores personalizados",
+    text3: "Puedes cambiar todo fácilmente",
+    colorText: '#ffd700',        // Texto dorado
+    colorNotif: '#1a1a2e',       // Fondo oscuro azulado
+    colorResalte: '#ff6b6b',     // Borde rojo
+    duration: 5000,
+    img: 'https://ejemplo.com/imagen.png'
+});
+```
+
+**javascript**
+
+```
+// Notificación con colores en español (alias)
+MostrarInfoScreen({
+    texto: "Notificación en español",
+    texto2: "Con colores personalizados",
+    colorText: '#00ff88',        // Texto verde neón
+    colorNotif: '#2d2d44',       // Fondo morado oscuro
+    colorResalte: '#00ff88',     // Borde verde neón
+    duracion: 4000
+});
+```
+
+**javascript**
+
+```
+// Diálogo con colores personalizados
+MostrarInfoScreen({
+    text: "Confirmación",
+    text2: "¿Estás seguro de continuar?",
+    colorText: '#ffffff',
+    colorNotif: 'rgba(20, 20, 40, 0.95)',
+    colorResalte: '#4facfe',
+    dialogo: 'center',
+    botones: [
+        {
+            texto: "Cancelar",
+            accion: () => console.log("Cancelado")
+        },
+        {
+            texto: "Aceptar",
+            accion: () => console.log("Aceptado")
+        }
+    ]
+});
+```
+
 
 ### Sistema de Progreso
 

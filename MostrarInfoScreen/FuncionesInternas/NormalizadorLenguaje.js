@@ -1,3 +1,14 @@
+import { Notificaciones } from './ApiPublica.js'
+
+import { NORMALIZADOR,
+       CONFIG_KEY_ALIASES,
+       BUTTON_KEY_ALIASES,
+       INPUT_KEY_ALIASES,
+       FONDO_KEY_ALIASES,
+       TASK_KEY_ALIASES,
+       BOOLEAN_KEYS } from '../VariablesNormalizadorBilenguaje.js';
+
+import { NOTIFICATION_REGISTRY, registrarNotificacion, obtenerNotificacion, eliminarRegistro, cerrarNotificacionPorId } from '../FuncionesInternas/FuncionRegistrosID.js';
 /**
  * Normaliza un objeto completo (recursivo para objetos anidados)
  * Convierte cualquier valor en español a inglés y normaliza claves bilingües

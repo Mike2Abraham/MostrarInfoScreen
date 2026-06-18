@@ -35,6 +35,9 @@ function injectNotificationStyles() {
         scroll-behavior: smooth;
     }
     .notification {
+    
+        user-select: none;  
+
         background: rgb(28 28 28 / 57%);
         border-left: 7px solid #6b46c1;
         border-radius: 8px;
@@ -841,4 +844,37 @@ function injectNotificationStyles() {
   }
 }
 
-export { injectNotificationStyles }
+
+/**
+ * Aplica colores personalizados a la notificación
+ */
+function aplicarColoresPersonalizados(notification, config) {
+    // 1. COLOR DEL TEXTO (colorText)
+    if (config.colorText) {
+        const textos = notification.querySelectorAll('.notification-text1, .notification-text2, .notification-text3, .notification-text4, .notification-text5, .notification-text6, .notification-text');
+        textos.forEach(el => {
+            el.style.color = config.colorText;
+        });
+        // También el contenido general si tiene texto directo
+        const content = notification.querySelector('.notification-content');
+        if (content) {
+            content.style.color = config.colorText;
+        }
+    }
+    
+    // 2. COLOR DE FONDO DE LA NOTIFICACIÓN (colorNotif)
+    if (config.colorNotif) {
+        notification.style.backgroundColor = config.colorNotif;
+        // Si tiene backdrop-filter, mantenerlo pero con el nuevo color
+        notification.style.backdropFilter = 'blur(5px)';
+    }
+    
+    // 3. COLOR DEL BORDE IZQUIERDO (colorResalte)
+    if (config.colorResalte) {
+        notification.style.borderLeftColor = config.colorResalte;
+        // También el borde si es un diálogo con borde completo
+        notification.style.borderColor = config.colorResalte;
+    }
+}
+
+export { injectNotificationStyles, aplicarColoresPersonalizados }

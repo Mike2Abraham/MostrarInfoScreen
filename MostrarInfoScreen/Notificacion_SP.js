@@ -1,175 +1,22 @@
-import { injectNotificationStyles } from './Estilos';
+import { injectNotificationStyles, aplicarColoresPersonalizados } from './Estilos.js';
 
-import { } from './VariablesSVG';
+import { ICONOS_SP } from './VariablesSVG.js';
 
-import { } from './VariablesNormalizadorBilenguaje';
+import { NORMALIZADOR,
+       CONFIG_KEY_ALIASES,
+       BUTTON_KEY_ALIASES,
+       INPUT_KEY_ALIASES,
+       FONDO_KEY_ALIASES,
+       TASK_KEY_ALIASES,
+       BOOLEAN_KEYS } from './VariablesNormalizadorBilenguaje.js';
 
-import { } from './FuncionesInternas/Config_Fondo';
-import { } from './FuncionesInternas/NormalizadorLenguaje';
-import { } from './VariablesSVG';
+import { crearFondo, cerrarFondo } from './FuncionesInternas/Config_Fondo.js';
+import { normalizarConfig } from './FuncionesInternas/NormalizadorLenguaje.js';
+import { NOTIFICATION_REGISTRY, registrarNotificacion, obtenerNotificacion, eliminarRegistro, cerrarNotificacionPorId } from './FuncionesInternas/FuncionRegistrosID.js';
 
-// ===== SISTEMA DE REGISTRO DE NOTIFICACIONES POR ID =====
-const NOTIFICATION_REGISTRY = new Map(); // Map<id, notificationElement>
+import { hacerArrastrable } from './FuncionesInternas/HacerArrastrable.js';
 
-// Función para registrar notificación
-function registrarNotificacion(id, elemento, config) {
-    NOTIFICATION_REGISTRY.set(id, {
-        elemento: elemento,
-        config: config,
-        creada: Date.now()
-    });
-    
-    console.log(` Notificación registrada: ${id}`, elemento);
-}
-
-// Función para obtener notificación por ID
-function obtenerNotificacion(id) {
-    return NOTIFICATION_REGISTRY.get(id);
-}
-
-// Función para eliminar registro
-function eliminarRegistro(id) {
-    NOTIFICATION_REGISTRY.delete(id);
-    console.log(` Registro eliminado: ${id}`);
-}
-
-// Función para buscar y cerrar notificación por ID
-function cerrarNotificacionPorId(id) {
-    const registro = obtenerNotificacion(id);
-    if (!registro) {
-        console.warn(`⚠️ No se encontró notificación con ID: ${id}`);
-        return false;
-    }
-    
-    window.closeNotification(registro.elemento);
-    eliminarRegistro(id);
-    return true;
-}
-
-// ============================================
-// FUNCIÓN ARRASTRABLE CON PESO
-// ============================================
-function hacerArrastrable(elemento, peso = 5) {
-    if (!elemento) return;
-    
-    // Normalizar peso (0-10)
-    let pesoNormalizado = parseFloat(peso);
-    
-    // Si no es número válido o es NaN, usar 5 (neutral)
-    if (isNaN(pesoNormalizado)) {
-        pesoNormalizado = 5;
-    }
-    
-    // Limitar entre 0 y 10
-    pesoNormalizado = Math.min(10, Math.max(0, pesoNormalizado));
-    
-    // Si es decimal raro (ej: 2.2) redondear al entero más cercano
-    if (pesoNormalizado % 1 !== 0) {
-        pesoNormalizado = Math.round(pesoNormalizado);
-    }
-    
-    // Calcular factor de inercia (0 = muy liviano, 10 = muy pesado)
-    // La fórmula: cuanto más pesado, más difícil mover
-    const factorInercia = pesoNormalizado / 10; // 0 a 1
-    const resistencia = 0.3 + (factorInercia * 0.6); // 0.3 (liviano) a 0.9 (pesado)
-    
-    let posX = 0, posY = 0;
-    let offsetX = 0, offsetY = 0;
-    let mouseX = 0, mouseY = 0;
-    let dragging = false;
-    
-    // Estilo para indicar que es arrastrable (opcional)
-    elemento.style.cursor = 'grab';
-    elemento.style.userSelect = 'none';
-    
-    const onMouseMove = (e) => {
-        if (!dragging) return;
-        e.preventDefault();
-        
-        const nextX = e.clientX - offsetX;
-        const nextY = e.clientY - offsetY;
-        const dx = (nextX - posX) * (1 - resistencia);
-        const dy = (nextY - posY) * (1 - resistencia);
-        
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        posX += dx;
-        posY += dy;
-        
-        // Limitar dentro de la ventana del navegador
-        const rect = elemento.getBoundingClientRect();
-        const maxX = window.innerWidth - rect.width;
-        const maxY = window.innerHeight - rect.height;
-        
-        posX = Math.min(maxX, Math.max(0, posX));
-        posY = Math.min(maxY, Math.max(0, posY));
-        
-        elemento.style.position = 'fixed';
-        elemento.style.left = `${posX}px`;
-        elemento.style.top = `${posY}px`;
-        elemento.style.right = 'auto';
-        elemento.style.bottom = 'auto';
-        elemento.style.margin = '0';
-    };
-    
-    const onMouseUp = () => {
-        dragging = false;
-        elemento.style.cursor = 'grab';
-        document.body.style.userSelect = '';
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-    };
-    
-    const onMouseDown = (e) => {
-        // Solo arrastrar con click izquierdo
-        if (e.button !== 0) return;
-        
-        // No arrastrar si se hizo clic en un botón, input, o close button
-        const target = e.target;
-        if (target.closest('.notification-button') || 
-            target.closest('.notification-close') || 
-            target.closest('input') || 
-            target.closest('button')) {
-            return;
-        }
-        
-        e.preventDefault();
-        dragging = true;
-        
-        const rect = elemento.getBoundingClientRect();
-        posX = rect.left;
-        posY = rect.top;
-        offsetX = e.clientX - rect.left;
-        offsetY = e.clientY - rect.top;
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        
-        elemento.style.position = 'fixed';
-        elemento.style.left = `${posX}px`;
-        elemento.style.top = `${posY}px`;
-        elemento.style.right = 'auto';
-        elemento.style.bottom = 'auto';
-        elemento.style.margin = '0';
-        elemento.style.transform = 'none';
-        elemento.style.cursor = 'grabbing';
-        elemento.style.transition = 'none';
-        
-        // Evitar selección de texto mientras arrastra
-        document.body.style.userSelect = 'none';
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-    };
-    
-    elemento.addEventListener('mousedown', onMouseDown);
-    
-    // Devolver función para deshabilitar arrastre si es necesario
-    return () => {
-        elemento.removeEventListener('mousedown', onMouseDown);
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-    };
-}
-
+import { ejecutarMetodoGlobal } from './FuncionesInternas/FuncionGlobalejecutarMetodo.js'
 
 function MostrarInfoScreen(config) {
 
@@ -221,6 +68,12 @@ function MostrarInfoScreen(config) {
     const notification = document.createElement('div');
     notification.className = 'notification';
     
+
+    // Aplicar colores personalizados si existen
+    if (config.colorText || config.colorNotif || config.colorResalte) {
+        aplicarColoresPersonalizados(notification, config);
+    }
+
     // ===== NUEVO: HACER ARRASTRABLE =====
     if (config.arrastrable !== undefined && config.arrastrable !== false) {
         let peso = 5; // valor por defecto (neutral)
@@ -763,117 +616,15 @@ function MostrarInfoScreen(config) {
     return notification;
 }
 
+import { Notificaciones } from './FuncionesInternas/ApiPublica.js'
 
-// Función helper para ejecutar métodos globales
-function ejecutarMetodoGlobal(metodoString) {
-    return new Promise((resolve, reject) => {
-        try {
-            // Extraer nombre de función y parámetros de forma segura
-            const match = metodoString.match(/^([a-zA-Z_$][\w$]*)\((.*)\)$/);
-            if (!match) {
-                throw new Error(`Formato de método inválido: ${metodoString}`);
-            }
-            
-            const funcName = match[1];
-            const argsStr = match[2];
-            
-            // Buscar función en contexto global de forma segura
-            const globalFunc = window[funcName];
-            if (typeof globalFunc !== 'function') {
-                throw new Error(`Función ${funcName} no encontrada`);
-            }
-            
-            // Parsear argumentos de forma segura
-            let args = [];
-            if (argsStr.trim()) {
-                try {
-                    args = JSON.parse(`[${argsStr}]`);
-                } catch {
-                    args = [argsStr]; // Fallback a string simple
-                }
-            }
-            
-            const resultado = globalFunc(...args);
-            
-            if (resultado && typeof resultado.then === 'function') {
-                resultado.then(resolve).catch(reject);
-            } else {
-                resolve(resultado);
-            }
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
+window.MostrarInfoScreen = MostrarInfoScreen
+window.Notificaciones = Notificaciones
 
+export { MostrarInfoScreen, ICONOS_SP };
 
-/**
- * API Pública para manejar notificaciones por ID
- */
-window.Notificaciones = {
-    /**
-     * Crear notificación persistente
-     */
-    crear: function(id, config) {
-        return MostrarInfoScreen({
-            ...config,
-            tareaID: [{ id: id, operacion: { crear: true } }],
-            duration: config.duration || "infinito"
-        });
-    },
-    
-    /**
-     * Cerrar notificación por ID
-     */
-    cerrar: function(id, callback) {
-        const registro = obtenerNotificacion(id);
-        if (registro) {
-            closeNotification(registro.elemento);
-            if (callback) callback();
-            return true;
-        }
-        return false;
-    },
-    
-    /**
-     * Actualizar contenido de notificación existente
-     */
-    actualizar: function(id, nuevoContenido) {
-        const registro = obtenerNotificacion(id);
-        if (!registro || !registro.elemento) return false;
-        
-        const contentEl = registro.elemento.querySelector('.notification-content');
-        if (contentEl && nuevoContenido.text) {
-            const textEl = contentEl.querySelector('.notification-text1');
-            if (textEl) textEl.textContent = nuevoContenido.text;
-        }
-        
-        return true;
-    },
-    
-    /**
-     * Obtener todas las notificaciones activas
-     */
-    listar: function() {
-        return Array.from(NOTIFICATION_REGISTRY.keys());
-    },
-    
-    /**
-     * Cerrar todas las notificaciones persistentes
-     */
-    cerrarTodas: function() {
-        NOTIFICATION_REGISTRY.forEach((registro, id) => {
-            closeNotification(registro.elemento);
-        });
-        NOTIFICATION_REGISTRY.clear();
-    }
-};
-//if (typeof module !== "undefined" && module.exports) {
-//  module.exports = { MostrarInfoScreen, ICONOS_SP };
-//} else {
-//  window.MostrarInfoScreen = MostrarInfoScreen;
-//  window.ICONOS_SP = ICONOS_SP;
-//}
+console.log('📦 MostrarInfoScreen es:', typeof MostrarInfoScreen);
+
 /**
  * Muestra una notificación en pantalla con imagen, audio y texto
  * @param {string|Object} config - Texto del mensaje u objeto de configuración

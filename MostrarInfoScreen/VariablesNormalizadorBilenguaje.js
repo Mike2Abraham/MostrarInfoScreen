@@ -1,3 +1,4 @@
+
 // ============================================
 // NORMALIZADOR BILINGÜE COMPLETO
 // ============================================
@@ -132,7 +133,14 @@ const CONFIG_KEY_ALIASES = {
     'input': 'input',
     
     // Otros valores que pueden usarse como alias
-    'cerrarconclickfondo': 'cerrarConClickFondo'
+    'cerrarconclickfondo': 'cerrarConClickFondo',
+
+    // ===== NUEVOS COLORES =====
+    'colortext': 'colorText', 'colorText': 'colorText',
+    'colornotif': 'colorNotif', 'colorNotif': 'colorNotif',
+    'colorresalte': 'colorResalte', 'colorResalte': 'colorResalte',
+    'colorresaltar': 'colorResalte',
+    'colorborde': 'colorResalte', 'bordercolor': 'colorResalte'
 };
 
 const BUTTON_KEY_ALIASES = {
@@ -183,5 +191,5 @@ export {
        FONDO_KEY_ALIASES,
        TASK_KEY_ALIASES,
        BOOLEAN_KEYS
-       
+
     };
