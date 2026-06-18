@@ -497,7 +497,7 @@ const ejemplos = [
     {
         id: 'dialogo-1',
         categoria: 'dialogo',
-        titulo: '💬 Diálogo Izquierda',
+        titulo: '💬 Diálogo centro',
         descripcion: 'Simula un mensaje de chat a la izquierda.',
         codigo: `MostrarInfoScreen({
     text: "Usuario dice:",
@@ -509,7 +509,7 @@ const ejemplos = [
         test: () => MostrarInfoScreen({
             text: "👤 Usuario:",
             text2: "¡Hola! ¿Cómo estás?",
-            dialogo: "izquierda",
+            dialogo: "centro",
             img: "japan-artistic_resultado.png",
             duration: 5000
         })
@@ -518,6 +518,7 @@ const ejemplos = [
         id: 'dialogo-2',
         categoria: 'dialogo',
         titulo: '💬 Diálogo Derecha',
+        img: "japan-artistic_resultado.png",
         descripcion: 'Simula un mensaje de chat a la derecha.',
         codigo: `MostrarInfoScreen({
     text: "Sistema:",
@@ -549,6 +550,7 @@ const ejemplos = [
 });`,
         test: () => MostrarInfoScreen({
             text: "❓ ¿Estás seguro?",
+                dialogo: "centro",
             text2: "Esta acción no se puede deshacer",
             icono: "pregunta",
             duration: 8000,
@@ -604,6 +606,515 @@ const ejemplos = [
         }
     },
 
+    // ===== DIÁLOGO TUTORIAL CON HTML =====
+{
+    id: 'dialogo-tutorial',
+    categoria: 'dialogo',
+    titulo: '📚 Diálogo Tutorial con HTML',
+    descripcion: 'Diálogo centrado con contenido HTML enriquecido y botones de navegación.',
+    codigo: `MostrarInfoScreen({
+    text: "📚 Tutorial Interactivo",
+    text2: "Aprende paso a paso",
+    dialogo: "centro",
+    img: "japan-artistic_resultado.png",
+    arrastrable: 5,
+    duration: "infinito",
+    html: \`
+        <div style="text-align:center;padding:10px;">
+            <div style="background:#1f6feb20;border-radius:12px;padding:15px;margin:10px 0;">
+                <p style="font-size:1.1rem;color:#58a6ff;">📖 Paso 1 de 3</p>
+                <p style="color:#e6edf3;">Bienvenido al tutorial interactivo</p>
+                <div style="display:flex;gap:5px;justify-content:center;margin:10px 0;">
+                    <span style="width:10px;height:10px;border-radius:50%;background:#1f6feb;"></span>
+                    <span style="width:10px;height:10px;border-radius:50%;background:#30363d;"></span>
+                    <span style="width:10px;height:10px;border-radius:50%;background:#30363d;"></span>
+                </div>
+            </div>
+        </div>
+    \`,
+    botones: [
+        {
+            texto: "⬅️ Anterior",
+            estilos: { background: "#21262d" },
+                    cerrarAlCompletar: true
+        },
+        {
+            texto: "Siguiente ➡️",
+            accion: () => {
+                MostrarInfoScreen({
+                    text: "📚 Tutorial - Paso 2",
+                    text2: "¡Vas por buen camino!",
+                    dialogo: "centro",
+                    img: "japan-artistic_resultado.png",
+                    arrastrable: 5,
+                    duration: "infinito",
+                    html: \`
+                        <div style="text-align:center;padding:10px;">
+                            <div style="background:#23863620;border-radius:12px;padding:15px;margin:10px 0;">
+                                <p style="font-size:1.1rem;color:#3fb950;">✅ Paso 2 de 3</p>
+                                <p style="color:#e6edf3;">Has completado el paso 1 correctamente</p>
+                                <div style="display:flex;gap:5px;justify-content:center;margin:10px 0;">
+                                    <span style="width:10px;height:10px;border-radius:50%;background:#238636;"></span>
+                                    <span style="width:10px;height:10px;border-radius:50%;background:#1f6feb;"></span>
+                                    <span style="width:10px;height:10px;border-radius:50%;background:#30363d;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    \`,
+                    botones: [
+                        {
+                            texto: "⬅️ Anterior",
+                            accion: () => {
+                                MostrarInfoScreen({
+                                    text: "📚 Tutorial - Paso 1",
+                                    text2: "¡Bienvenido al tutorial!",
+                                    dialogo: "centro",
+                                    img: "japan-artistic_resultado.png",
+                                    arrastrable: 5,
+                                    duration: "infinito",
+                                    html: \`
+                                        <div style="text-align:center;padding:10px;">
+                                            <div style="background:#1f6feb20;border-radius:12px;padding:15px;margin:10px 0;">
+                                                <p style="font-size:1.1rem;color:#58a6ff;">📖 Paso 1 de 3</p>
+                                                <p style="color:#e6edf3;">Bienvenido al tutorial interactivo</p>
+                                                <div style="display:flex;gap:5px;justify-content:center;margin:10px 0;">
+                                                    <span style="width:10px;height:10px;border-radius:50%;background:#1f6feb;"></span>
+                                                    <span style="width:10px;height:10px;border-radius:50%;background:#30363d;"></span>
+                                                    <span style="width:10px;height:10px;border-radius:50%;background:#30363d;"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    \`,
+                                    botones: [
+                                        { texto: "⬅️ Anterior", estilos: { background: "#21262d" } },
+                                        { texto: "Siguiente ➡️", estilos: { background: "#1f6feb" }, cerrarAlCompletar: false }
+                                    ]
+                                });
+                            },
+                            estilos: { background: "#21262d" },
+                    cerrarAlCompletar: true
+                        },
+                        {
+                            texto: "Siguiente ➡️",
+                            accion: () => {
+                                MostrarInfoScreen({
+                                    text: "🎉 ¡Tutorial completado!",
+                                    text2: "Has finalizado todos los pasos",
+                                    dialogo: "centro",
+                                    img: "japan-artistic_resultado.png",
+                                    arrastrable: 5,
+                                    duration: "infinito",
+                                    html: \`
+                                        <div style="text-align:center;padding:10px;">
+                                            <div style="background:#f0883e20;border-radius:12px;padding:15px;margin:10px 0;">
+                                                <p style="font-size:1.1rem;color:#f0883e;">🎊 ¡Felicidades!</p>
+                                                <p style="color:#e6edf3;">Has completado el tutorial</p>
+                                                <div style="display:flex;gap:5px;justify-content:center;margin:10px 0;">
+                                                    <span style="width:10px;height:10px;border-radius:50%;background:#238636;"></span>
+                                                    <span style="width:10px;height:10px;border-radius:50%;background:#238636;"></span>
+                                                    <span style="width:10px;height:10px;border-radius:50%;background:#238636;"></span>
+                                                </div>
+                                                <p style="color:#8b949e;font-size:0.8rem;margin-top:5px;">🏆 ¡Completado!</p>
+                                            </div>
+                                        </div>
+                                    \`,
+                                    botones: [
+                                        {
+                                            texto: "✅ Finalizar",
+                                            cerrarAlCompletar: true,
+                                            estilos: { background: "#238636" }
+                                        }
+                                    ]
+                                });
+                            },
+                            estilos: { background: "#1f6feb" }
+                        }
+                    ]
+                });
+            },
+            estilos: { background: "#1f6feb" }
+        }
+    ]
+});`,
+    test: () => {
+        MostrarInfoScreen({
+            text: "📚 Tutorial Interactivo",
+            text2: "Aprende paso a paso",
+            dialogo: "centro",
+            img: "japan-artistic_resultado.png",
+            arrastrable: 5,
+            duration: "infinito",
+            html: `
+                <div style="text-align:center;padding:10px;">
+                    <div style="background:#1f6feb20;border-radius:12px;padding:15px;margin:10px 0;">
+                        <p style="font-size:1.1rem;color:#58a6ff;">📖 Paso 1 de 3</p>
+                        <p style="color:#e6edf3;">Bienvenido al tutorial interactivo</p>
+                        <div style="display:flex;gap:5px;justify-content:center;margin:10px 0;">
+                            <span style="width:10px;height:10px;border-radius:50%;background:#1f6feb;"></span>
+                            <span style="width:10px;height:10px;border-radius:50%;background:#30363d;"></span>
+                            <span style="width:10px;height:10px;border-radius:50%;background:#30363d;"></span>
+                        </div>
+                    </div>
+                </div>
+            `,
+            botones: [
+                {
+                    texto: "⬅️ Anterior",
+                    estilos: { background: "#21262d" },
+                    cerrarAlCompletar: true
+                },
+                {
+                    texto: "Siguiente ➡️",
+                    accion: () => {
+                        MostrarInfoScreen({
+                            text: "📚 Tutorial - Paso 2",
+                            text2: "¡Vas por buen camino!",
+                            dialogo: "centro",
+                            img: "japan-artistic_resultado.png",
+                            arrastrable: 5,
+                            duration: "infinito",
+                            html: `
+                                <div style="text-align:center;padding:10px;">
+                                    <div style="background:#23863620;border-radius:12px;padding:15px;margin:10px 0;">
+                                        <p style="font-size:1.1rem;color:#3fb950;">✅ Paso 2 de 3</p>
+                                        <p style="color:#e6edf3;">Has completado el paso 1 correctamente</p>
+                                        <div style="display:flex;gap:5px;justify-content:center;margin:10px 0;">
+                                            <span style="width:10px;height:10px;border-radius:50%;background:#238636;"></span>
+                                            <span style="width:10px;height:10px;border-radius:50%;background:#1f6feb;"></span>
+                                            <span style="width:10px;height:10px;border-radius:50%;background:#30363d;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `,
+                            botones: [
+                                {
+                                    texto: "⬅️ Anterior",
+                                    accion: () => {
+                                        // Volver al paso 1
+                                    },
+                                    estilos: { background: "#21262d" },
+                                    cerrarAlCompletar: true
+                                },
+                                {
+                                    texto: "Siguiente ➡️",
+                                    accion: () => {
+                                        MostrarInfoScreen({
+                                            text: "🎉 ¡Tutorial completado!",
+                                            text2: "Has finalizado todos los pasos",
+                                            dialogo: "centro",
+                                            img: "japan-artistic_resultado.png",
+                                            arrastrable: 5,
+                                            duration: "infinito",
+                                            html: `
+                                                <div style="text-align:center;padding:10px;">
+                                                    <div style="background:#f0883e20;border-radius:12px;padding:15px;margin:10px 0;">
+                                                        <p style="font-size:1.1rem;color:#f0883e;">🎊 ¡Felicidades!</p>
+                                                        <p style="color:#e6edf3;">Has completado el tutorial</p>
+                                                        <div style="display:flex;gap:5px;justify-content:center;margin:10px 0;">
+                                                            <span style="width:10px;height:10px;border-radius:50%;background:#238636;"></span>
+                                                            <span style="width:10px;height:10px;border-radius:50%;background:#238636;"></span>
+                                                            <span style="width:10px;height:10px;border-radius:50%;background:#238636;"></span>
+                                                        </div>
+                                                        <p style="color:#8b949e;font-size:0.8rem;margin-top:5px;">🏆 ¡Completado!</p>
+                                                    </div>
+                                                </div>
+                                            `,
+                                            botones: [
+                                                {
+                                                    texto: "✅ Finalizar",
+                                                    cerrarAlCompletar: true,
+                                                    estilos: { background: "#238636" }
+                                                }
+                                            ]
+                                        });
+                                    },
+                                    estilos: { background: "#1f6feb" },
+                                    cerrarAlCompletar: true
+                                    
+                                }
+                            ]
+                        });
+                    },
+                    estilos: { background: "#1f6feb" },
+                    cerrarAlCompletar: true
+                }
+            ]
+        });
+    }
+},
+
+// ===== DIÁLOGO CON BOTONES DE PREGUNTA =====
+{
+    id: 'dialogo-pregunta',
+    categoria: 'dialogo',
+    titulo: '❓ Diálogo de Pregunta/Confirmación',
+    descripcion: 'Diálogo centrado con botones para decisiones (eliminar, cancelar, etc.).',
+    codigo: `MostrarInfoScreen({
+    text: "⚠️ ¿Eliminar elemento?",
+    text2: "Esta acción no se puede deshacer",
+    dialogo: "centro",
+    img: "japan-artistic_resultado.png",
+    arrastrable: 5,
+    duration: "infinito",
+    icono: "pregunta",
+    html: \`
+        <div style="text-align:center;padding:5px;">
+            <div style="background:#f8514920;border-radius:12px;padding:10px;border:1px solid #f8514940;">
+                <p style="color:#f85149;font-size:0.9rem;">⚠️ Advertencia de seguridad</p>
+                <p style="color:#8b949e;font-size:0.8rem;">Elemento: "archivo_importante.pdf"</p>
+                <p style="color:#8b949e;font-size:0.8rem;margin-top:5px;">Tamaño: 2.4 MB</p>
+            </div>
+        </div>
+    \`,
+    botones: [
+        {
+            texto: "❌ Cancelar",
+            accion: () => {
+                MostrarInfoScreen({
+                    etiqueta: "center",
+                    emoji: "✅",
+                    text: "Operación cancelada",
+                    duration: 2000
+                });
+            },
+            estilos: { background: "#21262d" }
+        },
+        {
+            texto: "🗑️ Eliminar",
+            accion: async () => {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        MostrarInfoScreen({
+                            etiqueta: "center",
+                            emoji: "🗑️",
+                            text: "Elemento eliminado correctamente",
+                            duration: 3000
+                        });
+                        resolve();
+                    }, 1500);
+                });
+            },
+            cargando: "⏳ Eliminando...",
+            cerrarAlCompletar: true,
+            estilos: { background: "#f85149" }
+        }
+    ]
+});`,
+    test: () => {
+        MostrarInfoScreen({
+            text: "⚠️ ¿Eliminar elemento?",
+            text2: "Esta acción no se puede deshacer",
+            dialogo: "centro",
+            img: "japan-artistic_resultado.png",
+            arrastrable: 5,
+            duration: "infinito",
+            icono: "pregunta",
+            html: `
+                <div style="text-align:center;padding:5px;">
+                    <div style="background:#f8514920;border-radius:12px;padding:10px;border:1px solid #f8514940;">
+                        <p style="color:#f85149;font-size:0.9rem;">⚠️ Advertencia de seguridad</p>
+                        <p style="color:#8b949e;font-size:0.8rem;">Elemento: "archivo_importante.pdf"</p>
+                        <p style="color:#8b949e;font-size:0.8rem;margin-top:5px;">Tamaño: 2.4 MB</p>
+                    </div>
+                </div>
+            `,
+            botones: [
+                {
+                    texto: "❌ Cancelar",
+                    accion: () => {
+                        MostrarInfoScreen({
+                            etiqueta: "center",
+                            emoji: "✅",
+                            text: "Operación cancelada",
+                            duration: 2000
+                        });
+                    },
+                    estilos: { background: "#21262d" },
+                    cerrarAlCompletar: true
+                },
+                {
+                    texto: "🗑️ Eliminar",
+                    accion: async () => {
+                        return new Promise((resolve) => {
+                            setTimeout(() => {
+                                MostrarInfoScreen({
+                                    etiqueta: "center",
+                                    emoji: "🗑️",
+                                    text: "Elemento eliminado correctamente",
+                                    duration: 3000
+                                });
+                                resolve();
+                            }, 1500);
+                        });
+                    },
+                    cargando: "⏳ Eliminando...",
+                    cerrarAlCompletar: true,
+                    estilos: { background: "#f85149" }
+                }
+            ]
+        });
+    }
+},
+
+// ===== DIÁLOGO CON BARRA DE PROGRESO HTML =====
+{
+    id: 'dialogo-progreso',
+    categoria: 'dialogo',
+    titulo: '📊 Diálogo con Barra de Progreso',
+    descripcion: 'Diálogo centrado con barra de progreso animada en HTML.',
+    codigo: `MostrarInfoScreen({
+    text: "📊 Procesando archivos",
+    text2: "Subiendo documentos al servidor",
+    dialogo: "centro",
+    img: "japan-artistic_resultado.png",
+    arrastrable: 5,
+    duration: "infinito",
+    html: \`
+        <div style="padding:15px;">
+            <div style="background:#21262d;border-radius:8px;padding:15px;margin:5px 0;">
+                <div style="display:flex;justify-content:space-between;color:#8b949e;font-size:0.8rem;margin-bottom:8px;">
+                    <span>📤 Subiendo archivos...</span>
+                    <span id="progresoTexto">0%</span>
+                </div>
+                <div style="background:#30363d;border-radius:4px;height:20px;overflow:hidden;position:relative;">
+                    <div id="barraProgreso" style="width:0%;height:100%;background:linear-gradient(90deg,#1f6feb,#58a6ff);transition:width 0.5s ease;border-radius:4px;"></div>
+                    <span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:0.7rem;color:#e6edf3;font-weight:bold;">0%</span>
+                </div>
+                <div style="margin-top:10px;display:flex;justify-content:space-between;color:#8b949e;font-size:0.7rem;">
+                    <span>📁 5 archivos</span>
+                    <span>⏱️ Estimado: 30s</span>
+                </div>
+            </div>
+        </div>
+    \`,
+    botones: [
+        {
+            texto: "🚀 Iniciar Progreso",
+            accion: () => {
+                let progreso = 0;
+                const barra = document.getElementById('barraProgreso');
+                const texto = document.getElementById('progresoTexto');
+                
+                if (!barra || !texto) {
+                    MostrarInfoScreen("❌ Error: Elementos no encontrados");
+                    return;
+                }
+                
+                const interval = setInterval(() => {
+                    progreso += Math.random() * 8 + 2;
+                    if (progreso > 100) progreso = 100;
+                    
+                    barra.style.width = progreso + '%';
+                    texto.textContent = Math.round(progreso) + '%';
+                    barra.nextElementSibling.textContent = Math.round(progreso) + '%';
+                    
+                    if (progreso >= 100) {
+                        clearInterval(interval);
+                        MostrarInfoScreen({
+                            etiqueta: "center",
+                            emoji: "✅",
+                            text: "¡Carga completada!",
+                            duration: 3000
+                        });
+                    }
+                }, 300);
+            },
+            cargando: "⏳ Procesando...",
+            estilos: { background: "#1f6feb" }
+        },
+        {
+            texto: "❌ Cancelar",
+            accion: () => {
+                MostrarInfoScreen({
+                    etiqueta: "center",
+                    emoji: "⏹️",
+                    text: "Proceso cancelado",
+                    duration: 2000
+                });
+            },
+            estilos: { background: "#8b949e" }
+        }
+    ]
+});`,
+    test: () => {
+        MostrarInfoScreen({
+            text: "📊 Procesando archivos",
+            text2: "Subiendo documentos al servidor",
+            dialogo: "centro",
+            img: "japan-artistic_resultado.png",
+            arrastrable: 5,
+            duration: "infinito",
+            html: `
+                <div style="padding:15px;">
+                    <div style="background:#21262d;border-radius:8px;padding:15px;margin:5px 0;">
+                        <div style="display:flex;justify-content:space-between;color:#8b949e;font-size:0.8rem;margin-bottom:8px;">
+                            <span>📤 Subiendo archivos...</span>
+                            <span id="progresoTexto">0%</span>
+                        </div>
+                        <div style="background:#30363d;border-radius:4px;height:20px;overflow:hidden;position:relative;">
+                            <div id="barraProgreso" style="width:0%;height:100%;background:linear-gradient(90deg,#1f6feb,#58a6ff);transition:width 0.5s ease;border-radius:4px;"></div>
+                            <span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:0.7rem;color:#e6edf3;font-weight:bold;">0%</span>
+                        </div>
+                        <div style="margin-top:10px;display:flex;justify-content:space-between;color:#8b949e;font-size:0.7rem;">
+                            <span>📁 5 archivos</span>
+                            <span>⏱️ Estimado: 30s</span>
+                        </div>
+                    </div>
+                </div>
+            `,
+            botones: [
+                {
+                    texto: "🚀 Iniciar Progreso",
+                    accion: () => {
+                        let progreso = 0;
+                        const barra = document.getElementById('barraProgreso');
+                        const texto = document.getElementById('progresoTexto');
+                        
+                        if (!barra || !texto) {
+                            MostrarInfoScreen("❌ Error: Elementos no encontrados");
+                            return;
+                        }
+                        
+                        const interval = setInterval(() => {
+                            progreso += Math.random() * 8 + 2;
+                            if (progreso > 100) progreso = 100;
+                            
+                            barra.style.width = progreso + '%';
+                            texto.textContent = Math.round(progreso) + '%';
+                            barra.nextElementSibling.textContent = Math.round(progreso) + '%';
+                            
+                            if (progreso >= 100) {
+                                clearInterval(interval);
+                                MostrarInfoScreen({
+                                    etiqueta: "center",
+                                    emoji: "✅",
+                                    text: "¡Carga completada!",
+                                    duration: 3000
+                                });
+                            }
+                        }, 300);
+                    },
+                    cargando: "⏳ Procesando...",
+                    estilos: { background: "#1f6feb" },
+                    cerrarAlCompletar: true
+                },
+                {
+                    texto: "❌ Cancelar",
+                    accion: () => {
+                        MostrarInfoScreen({
+                            etiqueta: "center",
+                            emoji: "⏹️",
+                            text: "Proceso cancelado",
+                            duration: 2000
+                        });
+                    },
+                    estilos: { background: "#8b949e" },
+                    cerrarAlCompletar: true
+                }
+            ]
+        });
+    }
+},
     // ===== BOTONES =====
     {
         id: 'botones-1',
@@ -698,6 +1209,7 @@ const ejemplos = [
         test: () => MostrarInfoScreen({
             text: "🎨 Modal con fondo",
             text2: "Fondo semi-transparente con blur",
+                dialogo: "centro",
             fondo: [{
                 color: "#00000080",
                 blur: "5px"
@@ -814,6 +1326,7 @@ setTimeout(() => {
             MostrarInfoScreen({
                 text: "👤 Registro de usuario",
                 text2: "Ingresa tu nombre:",
+                dialogo: "centro",
                 input: {
                     tipo: "text",
                     placeholder: "Tu nombre completo",
@@ -864,6 +1377,7 @@ setTimeout(() => {
             MostrarInfoScreen({
                 text: "🔒 Verificación de seguridad",
                 text2: "Ingresa tu contraseña:",
+                dialogo: "centro",
                 input: {
                     tipo: "clave",
                     placeholder: "Contraseña (ej: 1234)",
@@ -910,7 +1424,7 @@ setTimeout(() => {
                 text: "🎯 Acción Avanzada",
                 text2: "Todas las características combinadas",
                 text3: "Fondo, icono, emoji, imagen y botones",
-                icono: "pregunta",
+                dialogo: "centro",
                 emoji: "🚀",
                 img: "https://api.dicebear.com/7.x/avataaars/svg?seed=admin",
                 fondo: [{ 
@@ -1014,17 +1528,17 @@ function renderizarEjemplos(filtro = 'all') {
         card.className = 'example-card';
         card.id = `ejemplo-${ejemplo.id}`;
         
-        // Código formateado (simple resaltado)
-        const codeFormatted = ejemplo.codigo
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/(MostrarInfoScreen)/g, '<span class="function">$1</span>')
-            .replace(/(text|text2|text3|duration|icono|etiqueta|dialogo|emoji|img|audio|fondo|botones|tareaID|input|tipo|placeholder|id|accion|cargando|cerrarAlCompletar|estilos|color|blur|gradiente|operacion|crear|cerrar|llamar)/g, '<span class="keyword">$1</span>')
-            .replace(/(".*?")/g, '<span class="string">$1</span>')
-            .replace(/(\d+)/g, '<span class="number">$1</span>')
-            .replace(/\/\/.*/g, '<span class="comment">$&</span>')
-            .replace(/(async|await|function|const|let|var|return|new|setTimeout)/g, '<span class="keyword">$1</span>');
+         
+        const codigoPlano = ejemplo.codigo;
+          //  .replace(/&/g, '&amp;')
+          //  .replace(/</g, '&lt;')
+          //  .replace(/>/g, '&gt;')
+          //  .replace(/(MostrarInfoScreen)/g, '<span class="function">$1</span>')
+          //  .replace(/(text|text2|text3|duration|icono|etiqueta|dialogo|emoji|img|audio|fondo|botones|tareaID|input|tipo|placeholder|id|accion|cargando|cerrarAlCompletar|estilos|color|blur|gradiente|operacion|crear|cerrar|llamar)/g, '<span class="keyword">$1</span>')
+          //  .replace(/(".*?")/g, '<span class="string">$1</span>')
+          //  .replace(/(\d+)/g, '<span class="number">$1</span>')
+          //  .replace(/\/\/.*/g, '<span class="comment">$&</span>')
+          //  .replace(/(async|await|function|const|let|var|return|new|setTimeout)/g, '<span class="keyword">$1</span>');
         
         card.innerHTML = `
             <div class="example-header">
@@ -1035,7 +1549,7 @@ function renderizarEjemplos(filtro = 'all') {
                 <div class="description">${ejemplo.descripcion}</div>
                 <div class="code-block">
                     <button class="copy-btn" onclick="copiarCodigo(this)">📋 Copiar</button>
-                    <pre style="margin:0;white-space:pre-wrap;word-break:break-all;">${codeFormatted}</pre>
+                    <pre style="margin:0;white-space:pre-wrap;word-break:break-all;color:#e6edf3;">${codigoPlano}</pre>
                 </div>
                 <button class="test-btn" onclick="ejecutarTest(${index})">
                     <span class="icon">▶</span> Test
