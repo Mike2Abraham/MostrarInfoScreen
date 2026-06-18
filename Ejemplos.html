@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo - MostrarInfoScreen 📢</title>
+    
+    <!-- ===== IMPORTAR TU FUNCIÓN DESDE GITHUB ===== -->
+    <!-- Cambia esta URL por la correcta de tu repositorio -->
+    <script src="./Notificacion_SP.js"></script>
+   
+    <style>
+        /* ===== ESTILOS GLOBALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            text-align: center;
+            padding: 2rem 0 3rem;
+            border: 1px solid #30363d;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(3px);
+            border-radius: 20px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #58a6ff, #f0883e, #f778ba);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .header .badge {
+            display: inline-block;
+            background: #238636;
+            color: #fff;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 1rem;
+            -webkit-text-fill-color: #fff;
+        }
+
+        .header p {
+            color: #8b949e;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .header .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .header .stats span {
+            background: #21262d;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #8b949e;
+        }
+
+        .header .stats strong {
+            color: #f0f6fc;
+        }
+
+        /* ===== FILTROS ===== */
+        .filters {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .filters button {
+            background: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .filters button:hover {
+            background: #30363d;
+            border-color: #58a6ff;
+        }
+
+        .filters button.active {
+            background: #1f6feb;
+            border-color: #1f6feb;
+            color: #fff;
+        }
+
+        /* ===== GRID DE EJEMPLOS ===== */
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* ===== TARJETA DE EJEMPLO ===== */
+        .example-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .example-card:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 0 30px rgba(88, 166, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .example-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.2rem;
+            background: #0d1117;
+            border-bottom: 1px solid #21262d;
+        }
+
+        .example-header .title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #f0f6fc;
+        }
+
+        .example-header .category {
+            font-size: 0.7rem;
+            background: #21262d;
+            padding: 0.2rem 0.8rem;
+            border-radius: 12px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .example-body {
+            padding: 1.2rem;
+        }
+
+        .example-body .description {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ===== CÓDIGO ===== */
+        .code-block {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.8rem 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            border: 1px solid #21262d;
+            position: relative;
+        }
+
+        .code-block .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #21262d;
+            border: none;
+            color: #8b949e;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .code-block .copy-btn:hover {
+            background: #30363d;
+            color: #f0f6fc;
+        }
+
+        .code-block .keyword { color: #ff7b72; }
+        .code-block .string { color: #a5d6ff; }
+        .code-block .function { color: #d2a8ff; }
+        .code-block .comment { color: #8b949e; }
+        .code-block .number { color: #79c0ff; }
+        .code-block .object { color: #ffa657; }
+
+        /* ===== BOTÓN TEST ===== */
+        .test-btn {
+            background: #1f6feb;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 0.8rem;
+            width: 100%;
+        }
+
+        .test-btn:hover {
+            background: #388bfd;
+            transform: scale(1.02);
+        }
+
+        .test-btn:active {
+            transform: scale(0.98);
+        }
+
+        .test-btn .icon {
+            margin-right: 0.5rem;
+        }
+
+        /* ===== RESULTADO ===== */
+        .result-area {
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            background: #0d1117;
+            border-radius: 8px;
+            border: 1px solid #21262d;
+            min-height: 40px;
+            display: none;
+            color: #8b949e;
+            font-size: 0.85rem;
+        }
+
+        .result-area.show {
+            display: block;
+        }
+
+        .result-area .success {
+            color: #3fb950;
+        }
+        .result-area .error {
+            color: #f85149;
+        }
+        .result-area .info {
+            color: #58a6ff;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 3rem 0 1rem;
+            color: #8b949e;
+            font-size: 0.85rem;
+            border-top: 1px solid #30363d;
+            margin-top: 3rem;
+        }
+
+        .footer a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .examples-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2rem; }
+            .header .stats { flex-direction: column; gap: 0.5rem; align-items: center; }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+    </style>
+</head>
+<body>
+<img style="
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    z-index: -1;" src="./japan-artistic_resultado.png">
+
+<div class="container">
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <h1>
+            📢 MostrarInfoScreen
+            <span class="badadge">v4.0.0</span>
+        </h1>
+        <p>Demostración interactiva de todas las capacidades</p>
+        <div class="stats">
+            <span>📦 <strong>25KB</strong></span>
+            <span>🎨 <strong>8+</strong> modos</span>
+            <span>🔧 <strong>15+</strong> parámetros</span>
+            <span>📋 <strong>12</strong> ejemplos</span>
+        </div>
+    </div>
+
+    <!-- ===== FILTROS ===== -->
+    <div class="filters" id="filters">
+        <button class="active" data-filter="all">📋 Todos</button>
+        <button data-filter="basico">🔤 Básico</button>
+        <button data-filter="etiqueta">🏷️ Etiqueta</button>
+        <button data-filter="dialogo">💬 Diálogo</button>
+        <button data-filter="iconos">🎨 Iconos</button>
+        <button data-filter="botones">🔘 Botones</button>
+        <button data-filter="fondo">🖼️ Fondos</button>
+        <button data-filter="tarea">🆔 Tareas</button>
+        <button data-filter="input">⌨️ Inputs</button>
+        <button data-filter="avanzado">🚀 Avanzado</button>
+    </div>
+
+    <!-- ===== GRID DE EJEMPLOS ===== -->
+    <div class="examples-grid" id="examplesGrid">
+        <!-- Los ejemplos se cargarán con JavaScript -->
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="footer">
+        <p>
+            Desarrollado con ❤️ por <strong>Abraham de Jesús Piñirí Megret</strong> &bull;
+            <a href="https://github.com/Mike2Abraham/MostrarInfoScreen" target="_blank">Ver en GitHub</a>
+        </p>
+        <p style="margin-top: 0.5rem; font-size: 0.75rem;">
+            Haz clic en <strong>▶ Test</strong> para probar cada ejemplo en vivo
+        </p>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// 1. VERIFICAR QUE LA FUNCIÓN ESTÉ CARGADA
+// ============================================================
+console.log('🔍 Verificando MostrarInfoScreen...');
+if (typeof MostrarInfoScreen === 'undefined') {
+    console.error('❌ MostrarInfoScreen no está definida. Asegúrate de importar el script correctamente.');
+    document.body.innerHTML = `
+        <div style="text-align:center;padding:4rem;color:#f85149;">
+            <h1>❌ Error</h1>
+            <p>No se pudo cargar la función <strong>MostrarInfoScreen</strong></p>
+            <p style="color:#8b949e;font-size:0.9rem;">
+                Verifica que el script esté en la URL correcta:
+                <br>
+                <code style="background:#161b22;padding:0.5rem;display:inline-block;border-radius:4px;margin-top:0.5rem;">
+                    https://raw.githubusercontent.com/tuusuario/MostrarInfoScreen/main/MostrarInfoScreen.js
+                </code>
+            </p>
+        </div>
+    `;
+    throw new Error('MostrarInfoScreen no cargada');
+}
+console.log('✅ MostrarInfoScreen cargada exitosamente');
+
+// ============================================================
+// 2. DEFINIR EJEMPLOS
+// ============================================================
+const ejemplos = [
+    // ===== BÁSICO =====
+    {
+        id: 'basico-1',
+        categoria: 'basico',
+        titulo: '🔤 Notificación Simple',
+        descripcion: 'La forma más básica de usar la función, solo con texto.',
+        codigo: `MostrarInfoScreen("¡Hola Mundo!");`,
+        test: () => MostrarInfoScreen("¡Hola Mundo!")
+    },
+    {
+        id: 'basico-2',
+        categoria: 'basico',
+        titulo: '📝 Múltiples Líneas',
+        descripcion: 'Hasta 6 líneas de texto para mensajes más detallados.',
+        codigo: `MostrarInfoScreen({
+    text: "Título principal",
+    text2: "Subtítulo o descripción",
+    text3: "Detalles adicionales",
+    duration: 5000
+});`,
+        test: () => MostrarInfoScreen({
+            text: "📦 Actualización disponible",
+            text2: "Versión 4.0.0 lista para instalar",
+            text3: "Nuevas características y mejoras",
+            duration: 5000
+        })
+    },
+    {
+        id: 'basico-3',
+        categoria: 'basico',
+        titulo: '⏱️ Duración Personalizada',
+        descripcion: 'Controla cuánto tiempo se muestra la notificación.',
+        codigo: `MostrarInfoScreen({
+    text: "Esta notificación dura 2 segundos",
+    duration: 2000
+});`,
+        test: () => MostrarInfoScreen({
+            text: "⏱️ Notificación rápida (2 segundos)",
+            duration: 2000
+        })
+    },
+
+    // ===== ETIQUETA =====
+    {
+        id: 'etiqueta-1',
+        categoria: 'etiqueta',
+        titulo: '🏷️ Etiqueta Center',
+        descripcion: 'Modo minimalista en el centro de la pantalla.',
+        codigo: `MostrarInfoScreen({
+    etiqueta: "center",
+    text: "¡Guardado exitoso!",
+    duration: 3000
+});`,
+        test: () => MostrarInfoScreen({
+            etiqueta: "center",
+            text: "✅ ¡Guardado exitoso!",
+            duration: 3000
+        })
+    },
+    {
+        id: 'etiqueta-2',
+        categoria: 'etiqueta',
+        titulo: '🏷️ Etiqueta Top',
+        descripcion: 'Etiqueta en la parte superior de la pantalla.',
+        codigo: `MostrarInfoScreen({
+    etiqueta: "top",
+    emoji: "🔔",
+    text: "Nuevo mensaje recibido",
+    duration: 4000
+});`,
+        test: () => MostrarInfoScreen({
+            etiqueta: "top",
+            emoji: "🔔",
+            text: "Nuevo mensaje recibido",
+            duration: 4000
+        })
+    },
+    {
+        id: 'etiqueta-3',
+        categoria: 'etiqueta',
+        titulo: '🏷️ Etiqueta con Emoji',
+        descripcion: 'Etiquetas minimalistas con emojis grandes.',
+        codigo: `MostrarInfoScreen({
+    etiqueta: "bottom",
+    emoji: "🎉",
+    text: "¡Felicitaciones!",
+    duration: 3000
+});`,
+        test: () => MostrarInfoScreen({
+            etiqueta: "bottom",
+            emoji: "🎉",
+            text: "¡Felicitaciones!",
+            duration: 3000
+        })
+    },
+
+    // ===== DIÁLOGO =====
+    {
+        id: 'dialogo-1',
+        categoria: 'dialogo',
+        titulo: '💬 Diálogo Izquierda',
+        descripcion: 'Simula un mensaje de chat a la izquierda.',
+        codigo: `MostrarInfoScreen({
+    text: "Usuario dice:",
+    text2: "¡Hola! ¿Cómo estás?",
+    dialogo: "izquierda",
+    img: "./japan-artistic_resultado.png",
+    duration: 5000
+});`,
+        test: () => MostrarInfoScreen({
+            text: "👤 Usuario:",
+            text2: "¡Hola! ¿Cómo estás?",
+            dialogo: "izquierda",
+            img: "japan-artistic_resultado.png",
+            duration: 5000
+        })
+    },
+    {
+        id: 'dialogo-2',
+        categoria: 'dialogo',
+        titulo: '💬 Diálogo Derecha',
+        descripcion: 'Simula un mensaje de chat a la derecha.',
+        codigo: `MostrarInfoScreen({
+    text: "Sistema:",
+    text2: "Todo funcionando correctamente",
+    dialogo: "derecha",
+    icono: "pregunta",
+    duration: 5000
+});`,
+        test: () => MostrarInfoScreen({
+            text: "🤖 Sistema:",
+            text2: "Todo funcionando correctamente",
+            dialogo: "derecha",
+            icono: "pregunta",
+            duration: 5000
+        })
+    },
+
+    // ===== ICONOS =====
+    {
+        id: 'iconos-1',
+        categoria: 'iconos',
+        titulo: '❓ Icono Pregunta',
+        descripcion: 'Icono SVG de pregunta para confirmaciones.',
+        codigo: `MostrarInfoScreen({
+    text: "¿Estás seguro?",
+    text2: "Esta acción no se puede deshacer",
+    icono: "pregunta",
+    botones: [{ texto: "Cancelar" }, { texto: "Confirmar" }]
+});`,
+        test: () => MostrarInfoScreen({
+            text: "❓ ¿Estás seguro?",
+            text2: "Esta acción no se puede deshacer",
+            icono: "pregunta",
+            duration: 8000,
+            botones: [
+                { texto: "❌ Cancelar" },
+                { texto: "✅ Confirmar", cerrarAlCompletar: true }
+            ]
+        })
+    },
+    {
+        id: 'iconos-2',
+        categoria: 'iconos',
+        titulo: '⚠️ Icono Aviso',
+        descripcion: 'Icono de advertencia para alertas importantes.',
+        codigo: `MostrarInfoScreen({
+    text: "⚠️ Advertencia",
+    text2: "El espacio de almacenamiento está por acabarse",
+    icono: "aviso",
+    duration: 6000
+});`,
+        test: () => MostrarInfoScreen({
+            text: "⚠️ Advertencia",
+            text2: "El espacio de almacenamiento está por acabarse",
+            icono: "aviso",
+            duration: 6000
+        })
+    },
+    {
+        id: 'iconos-3',
+        categoria: 'iconos',
+        titulo: '🔄 Icono Loader',
+        descripcion: 'Icono animado para procesos en curso.',
+        codigo: `MostrarInfoScreen({
+    text: "Cargando archivos...",
+    text2: "Por favor espera",
+    icono: "loader",
+    duration: "infinito"
+});`,
+        test: () => {
+            const notif = MostrarInfoScreen({
+                text: "🔄 Cargando archivos...",
+                text2: "Por favor espera",
+                icono: "loader",
+                duration: "infinito"
+            });
+            // Cerrar automáticamente después de 3 segundos
+            setTimeout(() => {
+                if (notif && notif.parentNode) {
+                    window.closeNotification(notif);
+                    MostrarInfoScreen("✅ Carga completada");
+                }
+            }, 3000);
+        }
+    },
+
+    // ===== BOTONES =====
+    {
+        id: 'botones-1',
+        categoria: 'botones',
+        titulo: '🔘 Botón con Callback',
+        descripcion: 'Botones interactivos que ejecutan acciones.',
+        codigo: `MostrarInfoScreen({
+    text: "📧 ¿Deseas enviar el correo?",
+    botones: [
+        {
+            texto: "📤 Enviar",
+            accion: () => {
+                MostrarInfoScreen("✅ Correo enviado");
+            },
+            cerrarAlCompletar: true,
+            estilos: { background: "#1f6feb" }
+        },
+        {
+            texto: "❌ Cancelar",
+            estilos: { background: "#8b949e" }
+        }
+    ]
+});`,
+        test: () => MostrarInfoScreen({
+            text: "📧 ¿Deseas enviar el correo?",
+            text2: "Se enviará a todos los destinatarios",
+            botones: [
+                {
+                    texto: "📤 Enviar",
+                    accion: () => {
+                        MostrarInfoScreen("✅ Correo enviado exitosamente");
+                    },
+                    cerrarAlCompletar: true,
+                    estilos: { background: "#1f6feb" }
+                },
+                {
+                    texto: "❌ Cancelar",
+                    estilos: { background: "#8b949e" }
+                }
+            ]
+        })
+    },
+    {
+        id: 'botones-2',
+        categoria: 'botones',
+        titulo: '🔘 Botón con Estado de Carga',
+        descripcion: 'Botón que muestra estado "Cargando..." mientras ejecuta.',
+        codigo: `MostrarInfoScreen({
+    text: "🔄 Procesar datos",
+    botones: [{
+        texto: "Procesar",
+        cargando: "Procesando...",
+        accion: async () => {
+            await new Promise(r => setTimeout(r, 2000));
+            MostrarInfoScreen("✅ Procesado");
+        },
+        cerrarAlCompletar: true,
+        estilos: { background: "#238636" }
+    }]
+});`,
+        test: () => MostrarInfoScreen({
+            text: "🔄 Procesar datos",
+            text2: "Haz clic para iniciar el procesamiento",
+            botones: [{
+                texto: "🚀 Procesar",
+                cargando: "⏳ Procesando...",
+                accion: async () => {
+                    await new Promise(r => setTimeout(r, 2000));
+                    MostrarInfoScreen("✅ Procesado exitosamente");
+                },
+                cerrarAlCompletar: true,
+                estilos: { background: "#238636" }
+            }]
+        })
+    },
+
+    // ===== FONDOS =====
+    {
+        id: 'fondo-1',
+        categoria: 'fondo',
+        titulo: '🖼️ Fondo con Color',
+        descripcion: 'Fondo personalizado con color y blur.',
+        codigo: `MostrarInfoScreen({
+    text: "🎨 Modal con fondo",
+    text2: "Fondo semi-transparente con blur",
+    fondo: [{
+        color: "#00000080",
+        blur: "5px"
+    }],
+    duration: 4000
+});`,
+        test: () => MostrarInfoScreen({
+            text: "🎨 Modal con fondo",
+            text2: "Fondo semi-transparente con blur",
+            fondo: [{
+                color: "#00000080",
+                blur: "5px"
+            }],
+            duration: 4000,
+            cerrarConClickFondo: true
+        })
+    },
+    {
+        id: 'fondo-2',
+        categoria: 'fondo',
+        titulo: '🌈 Fondo con Gradiente',
+        descripcion: 'Fondo con gradiente lineal personalizado.',
+        codigo: `MostrarInfoScreen({
+    text: "🌟 Gradiente",
+    text2: "Fondo con gradiente de colores",
+    fondo: [{
+        gradiente: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        estilos: { opacity: "0.95" }
+    }],
+    duration: 4000
+});`,
+        test: () => MostrarInfoScreen({
+            text: "🌟 Gradiente",
+            text2: "Fondo con gradiente de colores",
+            fondo: [{
+                gradiente: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                estilos: { opacity: "0.95" }
+            }],
+            duration: 4000,
+            cerrarConClickFondo: true
+        })
+    },
+
+    // ===== TAREAS/ID =====
+    {
+        id: 'tarea-1',
+        categoria: 'tarea',
+        titulo: '🆔 Notificación Persistente',
+        descripcion: 'Notificaciones que pueden ser actualizadas o cerradas por ID.',
+        codigo: `// Crear notificación persistente
+MostrarInfoScreen({
+    text: "⏳ Procesando tarea...",
+    tareaID: [{ id: "tarea_123", operacion: { crear: true } }],
+    duration: "infinito"
+});
+
+// Cerrar después de 3 segundos
+setTimeout(() => {
+    MostrarInfoScreen({
+        text: "✅ Tarea completada",
+        tareaID: [{
+            id: "tarea_123",
+            operacion: { crear: false, cerrar: true }
+        }],
+        duration: 3000
+    });
+}, 3000);`,
+        test: () => {
+            // Crear notificación persistente
+            MostrarInfoScreen({
+                text: "⏳ Procesando tarea...",
+                text2: "ID: tarea_123",
+                tareaID: [{ id: "tarea_123", operacion: { crear: true } }],
+                icono: "loader",
+                duration: "infinito"
+            });
+
+            // Cerrar después de 3 segundos
+            setTimeout(() => {
+                MostrarInfoScreen({
+                    text: "✅ Tarea completada",
+                    text2: "Proceso finalizado exitosamente",
+                    tareaID: [{
+                        id: "tarea_123",
+                        operacion: { 
+                            crear: false, 
+                            cerrar: true,
+                            llamar: () => {
+                                console.log("🔔 Callback ejecutado: tarea completada");
+                            }
+                        }
+                    }],
+                    duration: 3000
+                });
+            }, 3000);
+        }
+    },
+
+    // ===== INPUTS =====
+    {
+        id: 'input-1',
+        categoria: 'input',
+        titulo: '⌨️ Input de Texto',
+        descripcion: 'Campos de entrada dentro de la notificación.',
+        codigo: `MostrarInfoScreen({
+    text: "👤 Registro",
+    text2: "Ingresa tu nombre:",
+    input: {
+        tipo: "text",
+        placeholder: "Tu nombre",
+        id: "inputNombre"
+    },
+    botones: [{
+        texto: "Enviar",
+        accion: () => {
+            const input = document.getElementById("inputNombre");
+            MostrarInfoScreen("¡Hola " + input.value + "!");
+        },
+        cerrarAlCompletar: true
+    }]
+});`,
+        test: () => {
+            MostrarInfoScreen({
+                text: "👤 Registro de usuario",
+                text2: "Ingresa tu nombre:",
+                input: {
+                    tipo: "text",
+                    placeholder: "Tu nombre completo",
+                    id: "inputNombre"
+                },
+                botones: [{
+                    texto: "📤 Enviar",
+                    accion: () => {
+                        const input = document.getElementById("inputNombre");
+                        if (input && input.value.trim()) {
+                            MostrarInfoScreen(`👋 ¡Hola ${input.value}! Bienvenido`);
+                        } else {
+                            MostrarInfoScreen("❌ Por favor ingresa tu nombre");
+                        }
+                    },
+                    cerrarAlCompletar: true,
+                    estilos: { background: "#1f6feb" }
+                }]
+            });
+        }
+    },
+    {
+        id: 'input-2',
+        categoria: 'input',
+        titulo: '🔒 Input de Contraseña',
+        descripcion: 'Campo tipo contraseña (oculto).',
+        codigo: `MostrarInfoScreen({
+    text: "🔒 Verificación",
+    text2: "Ingresa tu contraseña:",
+    input: {
+        tipo: "clave",
+        placeholder: "Contraseña",
+        id: "inputClave"
+    },
+    botones: [{
+        texto: "Verificar",
+        accion: () => {
+            const input = document.getElementById("inputClave");
+            if (input.value === "1234") {
+                MostrarInfoScreen("✅ Correcto");
+            } else {
+                MostrarInfoScreen("❌ Incorrecto");
+            }
+        }
+    }]
+});`,
+        test: () => {
+            MostrarInfoScreen({
+                text: "🔒 Verificación de seguridad",
+                text2: "Ingresa tu contraseña:",
+                input: {
+                    tipo: "clave",
+                    placeholder: "Contraseña (ej: 1234)",
+                    id: "inputClave"
+                },
+                botones: [{
+                    texto: "🔑 Verificar",
+                    accion: () => {
+                        const input = document.getElementById("inputClave");
+                        if (input && input.value === "1234") {
+                            MostrarInfoScreen("✅ Contraseña correcta");
+                        } else {
+                            MostrarInfoScreen("❌ Contraseña incorrecta");
+                        }
+                    },
+                    cerrarAlCompletar: true,
+                    estilos: { background: "#1f6feb" }
+                }]
+            });
+        }
+    },
+
+    // ===== AVANZADO =====
+    {
+        id: 'avanzado-1',
+        categoria: 'avanzado',
+        titulo: '🔧 Combinación Completa',
+        descripcion: 'Todas las características juntas.',
+        codigo: `MostrarInfoScreen({
+    text: "🎯 Acción Avanzada",
+    text2: "Selecciona una opción",
+    icono: "pregunta",
+    emoji: "🚀",
+    img: "https://api.dicebear.com/7.x/avataaars/svg?seed=admin",
+    fondo: [{ color: "#00000070", blur: "8px" }],
+    botones: [
+        { texto: "✅ Aceptar", cerrarAlCompletar: true },
+        { texto: "❌ Cancelar" }
+    ],
+    duration: "infinito"
+});`,
+        test: () => {
+            MostrarInfoScreen({
+                text: "🎯 Acción Avanzada",
+                text2: "Todas las características combinadas",
+                text3: "Fondo, icono, emoji, imagen y botones",
+                icono: "pregunta",
+                emoji: "🚀",
+                img: "https://api.dicebear.com/7.x/avataaars/svg?seed=admin",
+                fondo: [{ 
+                    color: "#00000070", 
+                    blur: "8px",
+                    estilos: { backgroundSize: "cover" }
+                }],
+                botones: [
+                    { 
+                        texto: "✅ Aceptar", 
+                        cerrarAlCompletar: true,
+                        estilos: { background: "#238636" }
+                    },
+                    { 
+                        texto: "❌ Cancelar",
+                        estilos: { background: "#8b949e" }
+                    }
+                ],
+                duration: "infinito",
+                cerrarConClickFondo: true
+            });
+        }
+    },
+    {
+        id: 'avanzado-2',
+        categoria: 'avanzado',
+        titulo: '📊 API Pública',
+        descripcion: 'Usando window.Notificaciones para control programático.',
+        codigo: `// Crear con API
+const notif = window.Notificaciones.crear("api_demo", {
+    text: "📊 API en acción",
+    icono: "loader"
+});
+
+// Actualizar después de 2s
+setTimeout(() => {
+    window.Notificaciones.actualizar("api_demo", {
+        text: "📊 Actualizado!"
+    });
+}, 2000);
+
+// Cerrar después de 4s
+setTimeout(() => {
+    window.Notificaciones.cerrar("api_demo");
+    MostrarInfoScreen("✅ API completada");
+}, 4000);`,
+        test: () => {
+            if (typeof window.Notificaciones === 'undefined') {
+                MostrarInfoScreen("❌ API no disponible");
+                return;
+            }
+            
+            // Crear con API
+            window.Notificaciones.crear("api_demo", {
+                text: "📊 API en acción",
+                text2: "Control programático",
+                icono: "loader",
+                duration: "infinito"
+            });
+
+            // Actualizar después de 2s
+            setTimeout(() => {
+                window.Notificaciones.actualizar("api_demo", {
+                    text: "📊 ¡Actualizado!",
+                    text2: "Segundo paso completado"
+                });
+            }, 2000);
+
+            // Cerrar después de 4s
+            setTimeout(() => {
+                window.Notificaciones.cerrar("api_demo", () => {
+                    MostrarInfoScreen("✅ API completada");
+                });
+            }, 4000);
+        }
+    }
+];
+
+// ============================================================
+// 3. RENDERIZAR EJEMPLOS
+// ============================================================
+function renderizarEjemplos(filtro = 'all') {
+    const grid = document.getElementById('examplesGrid');
+    grid.innerHTML = '';
+    
+    const filtrados = filtro === 'all' 
+        ? ejemplos 
+        : ejemplos.filter(e => e.categoria === filtro);
+    
+    if (filtrados.length === 0) {
+        grid.innerHTML = `
+            <div style="text-align:center;padding:4rem;color:#8b949e;grid-column:1/-1;">
+                <p style="font-size:1.5rem;">🔍 No hay ejemplos en esta categoría</p>
+            </div>
+        `;
+        return;
+    }
+    
+    filtrados.forEach((ejemplo, index) => {
+        const card = document.createElement('div');
+        card.className = 'example-card';
+        card.id = `ejemplo-${ejemplo.id}`;
+        
+        // Código formateado (simple resaltado)
+        const codeFormatted = ejemplo.codigo
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/(MostrarInfoScreen)/g, '<span class="function">$1</span>')
+            .replace(/(text|text2|text3|duration|icono|etiqueta|dialogo|emoji|img|audio|fondo|botones|tareaID|input|tipo|placeholder|id|accion|cargando|cerrarAlCompletar|estilos|color|blur|gradiente|operacion|crear|cerrar|llamar)/g, '<span class="keyword">$1</span>')
+            .replace(/(".*?")/g, '<span class="string">$1</span>')
+            .replace(/(\d+)/g, '<span class="number">$1</span>')
+            .replace(/\/\/.*/g, '<span class="comment">$&</span>')
+            .replace(/(async|await|function|const|let|var|return|new|setTimeout)/g, '<span class="keyword">$1</span>');
+        
+        card.innerHTML = `
+            <div class="example-header">
+                <span class="title">${ejemplo.titulo}</span>
+                <span class="category">${ejemplo.categoria}</span>
+            </div>
+            <div class="example-body">
+                <div class="description">${ejemplo.descripcion}</div>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copiarCodigo(this)">📋 Copiar</button>
+                    <pre style="margin:0;white-space:pre-wrap;word-break:break-all;">${codeFormatted}</pre>
+                </div>
+                <button class="test-btn" onclick="ejecutarTest(${index})">
+                    <span class="icon">▶</span> Test
+                </button>
+                <div class="result-area" id="result-${ejemplo.id}">
+                    <span class="info">⏳ Ejecutando...</span>
+                </div>
+            </div>
+        `;
+        
+        grid.appendChild(card);
+    });
+}
+
+// ============================================================
+// 4. FUNCIONES DE CONTROL
+// ============================================================
+function ejecutarTest(index) {
+    const ejemplo = ejemplos[index];
+    const resultArea = document.getElementById(`result-${ejemplo.id}`);
+    
+    if (!resultArea) return;
+    
+    resultArea.classList.add('show');
+    resultArea.innerHTML = `<span class="info">⏳ Ejecutando...</span>`;
+    
+    try {
+        // Ejecutar el test
+        ejemplo.test();
+        
+        // Resultado exitoso (la notificación ya se muestra)
+        setTimeout(() => {
+            resultArea.innerHTML = `<span class="success">✅ Ejecutado correctamente</span>`;
+        }, 500);
+        
+    } catch (error) {
+        resultArea.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+        console.error('Error en test:', error);
+    }
+}
+
+function copiarCodigo(btn) {
+    const block = btn.closest('.code-block');
+    const pre = block.querySelector('pre');
+    const texto = pre.textContent.trim();
+    
+    navigator.clipboard.writeText(texto).then(() => {
+        btn.textContent = '✅ Copiado';
+        setTimeout(() => {
+            btn.textContent = '📋 Copiar';
+        }, 2000);
+    }).catch(() => {
+        // Fallback
+        const range = document.createRange();
+        range.selectNode(pre);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
+        btn.textContent = '✅ Copiado';
+        setTimeout(() => {
+            btn.textContent = '📋 Copiar';
+        }, 2000);
+    });
+}
+
+// ============================================================
+// 5. FILTROS
+// ============================================================
+document.querySelectorAll('#filters button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('#filters button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderizarEjemplos(btn.dataset.filter);
+    });
+});
+
+// ============================================================
+// 6. INICIALIZAR
+// ============================================================
+renderizarEjemplos('all');
+
+console.log('🚀 Demo de MostrarInfoScreen cargada correctamente');
+console.log(`📊 ${ejemplos.length} ejemplos disponibles`);
+</script>
+
+</body>
+</html>

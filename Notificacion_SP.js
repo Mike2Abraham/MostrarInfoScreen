@@ -1275,7 +1275,7 @@ function registrarNotificacion(id, elemento, config) {
         creada: Date.now()
     });
     
-    console.log(`📝 Notificación registrada: ${id}`, elemento);
+    console.log(` Notificación registrada: ${id}`, elemento);
 }
 
 // Función para obtener notificación por ID
@@ -1286,7 +1286,7 @@ function obtenerNotificacion(id) {
 // Función para eliminar registro
 function eliminarRegistro(id) {
     NOTIFICATION_REGISTRY.delete(id);
-    console.log(`🗑️ Registro eliminado: ${id}`);
+    console.log(` Registro eliminado: ${id}`);
 }
 
 // Función para buscar y cerrar notificación por ID
@@ -1851,7 +1851,7 @@ function MostrarInfoScreen(config) {
                             duracionOriginal: config.duration
                         });
                         
-                        console.log(`🆔 Notificación persistente creada: ${tarea.id}`);
+                        console.log(` Notificación persistente creada: ${tarea.id}`);
                     }
                 }
                 
@@ -2273,7 +2273,7 @@ window.Notificaciones = {
 // .notification-button          /* Botones individuales */
 // .close-all-btn               /* Botón "Cerrar todas" */
 
-//   ⚡ Ejemplos de Uso en Contexto
+//    Ejemplos de Uso en Contexto
 //   Sistema de Descargas
 //   javascript
 //   function descargaCompletada(archivo) {
@@ -2294,7 +2294,7 @@ window.Notificaciones = {
 //   function usuarioConectado(nombre) {
 //       MostrarInfoScreen({
 //           etiqueta: "top",
-//           img: "👤",
+//           img: "ruta",
 //           text: `Bienvenido ${nombre}`,
 //           duration: 3000
 //       });
@@ -2304,7 +2304,7 @@ window.Notificaciones = {
 //   function mostrarError(mensaje) {
 //       MostrarInfoScreen({
 //           etiqueta: "bottom",
-//           img: "❌",
+//           img: "ruta",
 //           text: mensaje,
 //           duration: 4000
 //       });

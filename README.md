@@ -1,105 +1,155 @@
 # 📢 Notificación-SP Creado por Abraham de Jesús Piñirí Megret
 
-**Notificación-SP** es una **librería de JavaScript versátil** para mostrar notificaciones en pantalla en aplicaciones web. Incluye soporte para texto, imágenes, emojis, iconos (SVG y PNG Base64), audio, inputs, botones interactivos, modo etiqueta minimalista, gestión inteligente de múltiples notificaciones, **ventanas arrastrables con sistema de peso**, **normalización bilingüe (español/inglés)** y **fondos personalizables con blur**.
+[https://img.shields.io/badge/versi%C3%B3n-4.0.0-blue](https://img.shields.io/badge/versi%C3%B3n-4.0.0-blue)
+[https://img.shields.io/badge/licencia-MIT-green](https://img.shields.io/badge/licencia-MIT-green)
+[https://img.shields.io/badge/tama%C3%B1o-25KB-orange](https://img.shields.io/badge/tama%C3%B1o-25KB-orange)
 
-Con esta librería puedes crear desde **notificaciones simples** hasta **tutoriales paso a paso** sin esfuerzo, controlando duración, posición y comportamiento de forma fácil y predecible.
+Una librería de notificaciones versátil y potente para aplicaciones web con soporte para notificaciones estándar, etiquetas minimalistas, botones interactivos, fondos personalizados y gestión inteligente de múltiples notificaciones.
 
----
+## 📋 Índice
+
+* [Características Principales]()
+* [Instalación]()
+* [Uso Básico]()
+* [Parámetros Completos]()
+* [Modos de Notificación]()
+* [Sistema de Iconos]()
+* [Sistema de Fondos]()
+* [Sistema de Tareas/IDs]()
+* [API de Notificaciones]()
+* [Ejemplos Prácticos]()
+* [Solución de Problemas]()
+* [Changelog]()
+
+## ✨ Características Principales
+
+* ✅ **Notificaciones estándar** con texto múltiple (hasta 6 líneas)
+* ✅ **Modo etiqueta** minimalista para mensajes rápidos
+* ✅ **Sistema de iconos** SVG integrados (pregunta, error, aviso, loader)
+* ✅ **Botones interactivos** con callbacks y estados de carga
+* ✅ **Fondos personalizables** (imágenes, colores, gradientes, blur)
+* ✅ **Gestión por ID** para notificaciones persistentes
+* ✅ **Control de múltiples notificaciones** con límite automático
+* ✅ **Scroll inteligente** con rueda del mouse
+* ✅ **Soporte para audio** en notificaciones
+* ✅ **Totalmente responsive** y animado
+* ✅ **API pública** para control programático
 
 ## 📦 Instalación
 
-Incluye la librería en tu proyecto HTML:
+### Método 1: Inclusión directa
 
-```html
-<!-- Librería de notificaciones -->
-<script src="./Notificacion-SP.js"></script>
-⚡ Uso básico
-1. Notificación simple
-javascript
+**html**
+
+```
+<script src="MostrarInfoScreen.js"></script>
+```
+
+### Método 2: Como módulo ES6
+
+**javascript**
+
+```
+import './MostrarInfoScreen.js';
+```
+
+## 🚀 Uso Básico
+
+### Notificación simple
+
+**javascript**
+
+```
+// Texto simple
 MostrarInfoScreen("¡Hola Mundo!");
-2. Con texto y duración personalizada
-javascript
+
+// Con duración personalizada
 MostrarInfoScreen({
     text: "Operación exitosa",
     duration: 3000
 });
-3. Con imagen o emoji
-javascript
-MostrarInfoScreen({
-    text: "Nuevo mensaje recibido",
-    img: "📩",
-    duration: 4000
-});
-🌍 Normalización bilingüe (español/inglés)
-Todos los parámetros aceptan español e inglés indistintamente. Puedes mezclar ambos idiomas en la misma configuración.
+```
 
-Español	Inglés
-dialogo: "centro"	dialogo: "center"
-dialogo: "arriba"	dialogo: "top"
-dialogo: "abajo"	dialogo: "bottom"
-dialogo: "izquierda"	dialogo: "left"
-dialogo: "derecha"	dialogo: "right"
-duration: "infinito"	duration: "infinity"
-etiqueta: "centro"	etiqueta: "center"
-input.tipo: "clave"	input.tipo: "password"
-input.tipo: "texto"	input.tipo: "text"
-input.tipo: "numero"	input.tipo: "number"
-input.tipo: "correo"	input.tipo: "email"
-alinear: "centro"	alinear: "center"
-tamaño: "pequeño"	tamaño: "small"
-estado: "exito"	estado: "success"
-Ejemplo mixto (funciona perfectamente):
+### Notificación con imagen y audio
 
-javascript
-MostrarInfoScreen({
-    dialogo: "centro",      // español
-    duration: "infinity",   // inglés
-    text: "Mezcla de idiomas",
-    input: { tipo: "clave" } // español
-});
-🏷️ Modo etiqueta (minimalista)
-Notificaciones compactas de una sola línea. Perfectas para mensajes rápidos.
+**javascript**
 
-javascript
-MostrarInfoScreen({ etiqueta: "top", text: "Conectado" });
-MostrarInfoScreen({ etiqueta: "bottom", text: "Desconectado" });
-MostrarInfoScreen({ etiqueta: "left", text: "Nuevo mensaje" });
-MostrarInfoScreen({ etiqueta: "right", text: "Actualizado" });
-🔔 Iconos del sistema
-Clave	Icono	Descripción
-pregunta	❓	Pregunta o ayuda
-error	❌	Mensaje de error
-aviso	⚠️	Advertencia
-loader	⏳	Indicador de carga
-predeterminado	📦 (Base64)	Icono por defecto
-Uso:
-
-javascript
+```
 MostrarInfoScreen({
-    icono: "error",
-    text: "Ocurrió un error inesperado"
-});
-🔊 Audio
-javascript
-MostrarInfoScreen({
+    img: "./recursos/icono.png",
+    audio: "./recursos/sonido.mp3",
     text: "Descarga completada",
-    audio: "./sounds/exito.mp3",
-    duration: 4000
+    text2: "El archivo se guardó correctamente",
+    duration: 5000
 });
-📝 Inputs dentro de la notificación
-javascript
+```
+
+##  Parámetros Completos
+
+### Estructura básica
+
+**javascript**
+
+```
 MostrarInfoScreen({
-    text: "Ingresa tu clave:",
+    // Texto (puedes usar hasta text6)
+    text: "Texto principal",
+    text2: "Texto secundario",
+    text3: "Texto adicional",
+    text4: "Cuarta línea",
+    text5: "Quinta línea",
+    text6: "Sexta línea",
+  
+    // Multimedia
+    img: "url/a/imagen.jpg",
+    audio: "url/a/audio.mp3",
+    emoji: "🎉", // Emoji grande
+  
+    // Tiempo
+    duration: 4000, // ms o "infinito"
+  
+    // Modos especiales
+    etiqueta: "center", // Activa modo etiqueta
+    dialogo: "izquierda", // Posición para diálogos
+  
+    // Iconos del sistema
+    icono: "pregunta", // "pregunta", "error", "aviso", "loader", "predeterminado"
+  
+    // Botones interactivos
+    botones: [...],
+  
+    // Fondos personalizados
+    fondo: [...],
+  
+    // Sistema de IDs/tareas
+    tareaID: [...],
+  
+    // HTML personalizado
+    html: "<div>Contenido HTML</div>",
+  
+    // Inputs
     input: {
-        tipo: "clave",
-        placeholder: "••••••",
-        id: "claveInput"
+        tipo: "text", // "text" o "clave"
+        placeholder: "Escribe algo...",
+        valorInicial: "",
+        id: "miInput"
     }
 });
-🎛️ Botones interactivos
-javascript
+```
+
+## 🎯 Modos de Notificación
+
+### 1. 🔔 Notificación Estándar
+
+**javascript**
+
+```
 MostrarInfoScreen({
-    text: "¿Deseas eliminar este archivo?",
+    img: "./recursos/alerta.png",
+    text: "Confirmación requerida",
+    text2: "¿Estás seguro de eliminar este elemento?",
+    text3: "Esta acción no se puede deshacer",
+    duration: 10000,
     botones: [
         {
             texto: "Cancelar",
@@ -108,325 +158,674 @@ MostrarInfoScreen({
         },
         {
             texto: "Eliminar",
-            accion: async () => await eliminarArchivo(),
+            accion: async () => {
+                await eliminarElemento();
+                MostrarInfoScreen("Elemento eliminado");
+            },
             cargando: "Eliminando...",
             cerrarAlCompletar: true,
-            estilos: { background: "#dc3545", color: "#fff" }
+            estilos: { background: "#dc3545" }
         }
     ]
 });
-🖱️ Ventanas arrastrables con sistema de peso
-Puedes hacer que cualquier notificación sea arrastrable por el usuario, con un sistema de peso que controla la sensibilidad al movimiento.
+```
 
-Peso	Comportamiento
-0	Muy liviano (se mueve con facilidad)
-5	Neutral (balanceado)
-10	Muy pesado (requiere más esfuerzo)
-Valores fuera del rango (0-10) se normalizan automáticamente. Decimales se redondean al entero más cercano.
+### 2. 🏷️ Modo Etiqueta (Minimalista)
 
-javascript
-// Notificación liviana (fácil de arrastrar)
+**javascript**
+
+```
+// Etiqueta en diferentes posiciones
+MostrarInfoScreen({ etiqueta: "top", text: "Conectado" });
+MostrarInfoScreen({ etiqueta: "bottom", text: "Desconectado" });
+MostrarInfoScreen({ etiqueta: "left", text: "Nuevo mensaje" });
+MostrarInfoScreen({ etiqueta: "right", text: "Actualizado" });
+MostrarInfoScreen({ etiqueta: "center", text: "Guardado" });
+
+// Con emoji y duración personalizada
 MostrarInfoScreen({
-    text: "Ventana liviana",
-    arrastrable: 1
+    etiqueta: "center",
+    emoji: "✅",
+    text: "Guardado exitoso",
+    duration: 2000,
+    audio: "./sounds/click.mp3"
+});
+```
+
+### 3. 💬 Modo Diálogo
+
+**javascript**
+
+```
+MostrarInfoScreen({
+    text: "Usuario dice:",
+    text2: "¡Hola! ¿Cómo estás?",
+    dialogo: "izquierda", // "izquierda", "derecha", "centro"
+    img: "./avatars/usuario1.png",
+    duration: 5000
 });
 
-// Notificación pesada (difícil de arrastrar)
 MostrarInfoScreen({
-    text: "Ventana pesada",
-    arrastrable: 9
+    text: "Sistema responde:",
+    text2: "Todo funcionando correctamente",
+    dialogo: "derecha",
+    icono: "pregunta",
+    duration: 5000
+});
+```
+
+## 🎨 Sistema de Iconos
+
+### Iconos disponibles
+
+**javascript**
+
+```
+// Icono de pregunta (azul)
+MostrarInfoScreen({
+    text: "¿Estás seguro?",
+    icono: "pregunta"
 });
 
-// Peso neutral (valor por defecto si solo se pone true)
+// Icono de error (rojo)
 MostrarInfoScreen({
-    text: "Ventana normal",
-    arrastrable: true  // equivale a peso 5
+    text: "¡Error!",
+    text2: "No se pudo completar la operación",
+    icono: "error"
 });
 
-// Sin arrastre (comportamiento original)
+// Icono de advertencia (amarillo)
 MostrarInfoScreen({
-    text: "Ventana fija"
-    // no incluir arrastrable
+    text: "Advertencia",
+    text2: "El espacio está por acabarse",
+    icono: "aviso"
 });
-Características del sistema arrastrable:
 
-✅ Respeta los límites del navegador (no se sale de la pantalla)
-
-✅ No interfiere con botones, inputs o el botón de cerrar
-
-✅ Cambia el cursor a grab / grabbing para feedback visual
-
-✅ La resistencia al movimiento es proporcional al peso configurado
-
-🎨 Fondos personalizables con blur
-Puedes agregar fondos con color, imagen, gradiente y efecto blur a tus notificaciones.
-
-javascript
-MostrarInfoScreen({
-    text: "Notificación con fondo",
-    fondo: [
-        { color: "#00000080", blur: "5px" },
-        { imagen: "./fondo.jpg" }
-    ],
-    cerrarConClickFondo: true  // Cierra al hacer clic fuera
-});
-Propiedad de fondo	Descripción
-color	Color sólido (formato HEX, RGB, RGBA)
-imagen	URL de imagen de fondo
-gradiente	Gradiente CSS (ej: linear-gradient(...))
-blur	Efecto blur (valor en px, ej: "10px")
-estilos	Estilos CSS personalizados adicionales
-⏱ Duración
-duration puede ser un número en milisegundos, o 'infinito' para que la notificación no desaparezca automáticamente.
-
-La notificación se pausará al hacer hover si es infinita o temporal.
-
-javascript
+// Icono de carga animado
 MostrarInfoScreen({
     text: "Cargando...",
-    duration: 'infinito',
+    icono: "loader",
+    duration: "infinito"
+});
+
+// Icono predeterminado (Base64 PNG)
+MostrarInfoScreen({
+    text: "Notificación del sistema",
+    icono: "predeterminado"
+});
+```
+
+## 🖼️ Sistema de Fondos
+
+### Fondos simples
+
+**javascript**
+
+```
+// Fondo con color
+MostrarInfoScreen({
+    text: "Modal de confirmación",
+    fondo: [
+        {
+            color: "#00000080", // Negro semi-transparente
+            blur: "5px"
+        }
+    ]
+});
+
+// Fondo con imagen
+MostrarInfoScreen({
+    text: "Procesando video...",
+    fondo: [
+        {
+            imagen: "./fondos/loading-bg.png",
+            estilos: {
+                opacity: "0.8",
+                backgroundSize: "cover"
+            }
+        },
+        {
+            blur: true
+        }
+    ]
+});
+```
+
+### Fondos con gradientes
+
+**javascript**
+
+```
+// Gradiente lineal
+MostrarInfoScreen({
+    text: "¡Felicidades!",
+    fondo: [
+        {
+            gradiente: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            estilos: { opacity: "0.95" }
+        }
+    ]
+});
+
+// Gradiente radial
+MostrarInfoScreen({
+    text: "Atención",
+    fondo: [
+        {
+            gradiente: "radial-gradient(circle, rgba(255,0,0,0.5) 0%, rgba(0,0,0,0.8) 100%)",
+            blur: "3px"
+        }
+    ]
+});
+```
+
+### Combinación múltiple
+
+**javascript**
+
+```
+MostrarInfoScreen({
+    text: "Ventana emergente",
+    fondo: [
+        {
+            imagen: "./fondos/pattern.png",
+            estilos: { backgroundSize: "200px" }
+        },
+        {
+            color: "#161616d9"
+        },
+        {
+            blur: "10px"
+        }
+    ],
+    cerrarConClickFondo: true
+});
+```
+
+##  Sistema de Tareas/IDs
+
+### Notificaciones persistentes
+
+**javascript**
+
+```
+// Crear notificación persistente
+MostrarInfoScreen({
+    text: "⏳ Procesando datos...",
+    tareaID: [{
+        id: "proceso_123",
+        operacion: { crear: true }
+    }],
+    duration: "infinito" // Omitir duration también funciona
+});
+
+// En otro lugar, cerrarla
+MostrarInfoScreen({
+    text: "✅ Proceso completado",
+    tareaID: [{
+        id: "proceso_123",
+        operacion: { crear: false, cerrar: true }
+    }],
+    duration: 3000
+});
+```
+
+### Actualización de progreso
+
+**javascript**
+
+```
+// Paso 1: Iniciar
+MostrarInfoScreen({
+    text: "Paso 1/3: Descargando...",
+    tareaID: [{ id: "proceso_descarga", operacion: { crear: true } }],
     icono: "loader"
 });
-🗂️ Tutorial paso a paso
-javascript
-function mostrarTutorial() {
-    const tarjetas = [
-        { text: "Paso 1", text2: "Descripción paso 1", img: "📦" },
-        { text: "Paso 2", text2: "Descripción paso 2", img: "🛡️" },
-        { text: "Paso 3", text2: "Descripción paso 3", img: "📥" },
-    ];
-    
-    let currentIndex = 0;
 
-    function mostrarTarjeta(index) {
-        const tarjeta = tarjetas[index];
-        MostrarInfoScreen({
-            dialogo: "centro",
-            text: tarjeta.text,
-            text2: tarjeta.text2,
-            img: tarjeta.img,
-            duration: 'infinito',
-            botones: [
-                {
-                    texto: "← Anterior",
-                    accion: () => mostrarTarjeta(index - 1),
-                    estilos: { background: "#6c757d" },
-                    cerrarAlCompletar: true,
-                    disabled: index === 0
-                },
-                {
-                    texto: "Siguiente →",
-                    accion: () => mostrarTarjeta(index + 1),
-                    estilos: { background: "#2dd4bf", color: "#042024" },
-                    cerrarAlCompletar: true,
-                    disabled: index === tarjetas.length - 1
-                }
-            ]
-        });
-    }
+// Paso 2: Actualizar (sin cerrar)
+setTimeout(() => {
+    MostrarInfoScreen({
+        text: "Paso 2/3: Procesando...",
+        tareaID: [{ 
+            id: "proceso_descarga", 
+            operacion: { crear: false, cerrar: false } 
+        }]
+    });
+}, 2000);
 
-    mostrarTarjeta(currentIndex);
-}
-🌀 Gestión de múltiples notificaciones
-Máximo 3 notificaciones visibles.
+// Paso 3: Completar y cerrar
+setTimeout(() => {
+    MostrarInfoScreen({
+        text: "✅ ¡Completado!",
+        tareaID: [{ 
+            id: "proceso_descarga", 
+            operacion: { crear: false, cerrar: true } 
+        }],
+        duration: 3000
+    });
+}, 5000);
+```
 
-Scroll con la rueda del mouse si hay más de 3.
+### Con función callback
 
-Botón "Cerrar todas" aparece automáticamente si hay exceso de notificaciones.
+**javascript**
 
-🆔 Sistema de identificación (tareaID)
-Puedes asignar un ID a una notificación para controlarla desde cualquier parte de tu código.
-
-javascript
-// Crear notificación persistente con ID
+```
 MostrarInfoScreen({
-    text: "Descargando archivo...",
-    duration: "infinito",
-    tareaID: [{ id: "descarga_001", operacion: { crear: true } }]
+    text: "Ejecutando tarea...",
+    tareaID: [{
+        id: "tarea_async",
+        operacion: { 
+            crear: false, 
+            cerrar: true,
+            llamar: () => {
+                console.log("Tarea completada");
+                actualizarUI();
+            }
+        }
+    }]
+});
+```
+
+## 🛠️ API de Notificaciones
+
+### Métodos disponibles
+
+**javascript**
+
+```
+// Crear notificación persistente
+const notif = window.Notificaciones.crear("upload_123", {
+    text: "Subiendo archivo...",
+    icono: "loader"
 });
 
-// Cerrar notificación por ID desde otro lugar
-MostrarInfoScreen({
-    tareaID: [{ id: "descarga_001", operacion: { crear: false, cerrar: true } }]
+// Actualizar notificación existente
+window.Notificaciones.actualizar("upload_123", {
+    text: "Subiendo archivo... 75%"
 });
 
-// API pública para gestión de notificaciones
-window.Notificaciones.crear("mi_id", { text: "Hola" });
-window.Notificaciones.cerrar("mi_id");
-window.Notificaciones.listar();  // ["mi_id", ...]
+// Cerrar notificación por ID
+window.Notificaciones.cerrar("upload_123", () => {
+    console.log("Upload completado");
+});
+
+// Listar todas las notificaciones activas
+const activas = window.Notificaciones.listar();
+console.log(activas); // ["upload_123", "proceso_456"]
+
+// Cerrar todas las notificaciones
 window.Notificaciones.cerrarTodas();
-🎨 Personalización CSS
-css
-.notification-container       /* Contenedor principal */
-.notification                 /* Notificación individual */
-.notification.visible         /* Estado visible */
-.notification.hiding          /* Animación de salida */
-.notification.arrastrable     /* Notificación arrastrable */
-.etiqueta                     /* Modo etiqueta */
-.notification-buttons         /* Contenedor de botones */
-.notification-button          /* Botones individuales */
-.notification-img             /* Imagen de notificación */
-.notification-svg             /* Iconos SVG */
-.notification-emoji           /* Emoji grande */
-.notification-html            /* Contenido HTML */
-.close-all-btn                /* Botón cerrar todas */
-.backdrop-image               /* Fondo con imagen */
-.backdrop-color               /* Fondo con color */
-.backdrop-gradient            /* Fondo con gradiente */
-.backdrop-blur                /* Fondo con efecto blur */
-💡 Tips y buenas prácticas
-Usar img o icono explícitamente para evitar que aparezca el predeterminado sin querer.
 
-Combinar texto + icono + audio para notificaciones más atractivas.
-
-Para tutoriales largos, usa un array de tarjetas y un índice para navegar, evitando duplicar funciones.
-
-Inputs permiten interactuar con el usuario sin abrir un modal extra.
-
-Siempre manejar errores en botones o métodos globales para evitar que rompa la notificación.
-
-Usa arrastrable para ventanas que el usuario pueda mover (ideal para tutoriales o modales).
-
-El sistema bilingüe te permite escribir código más natural en español o inglés.
-
-📖 Ejemplo completo
-javascript
-MostrarInfoScreen({
-    dialogo: "centro",
-    img: "📚",
-    text: "Centro de Ayuda",
-    text2: "Aprende a usar la librería al máximo",
-    duration: 'infinito',
-    arrastrable: 5,  // peso neutral, se puede mover
-    fondo: [
-        { color: "#00000060", blur: "8px" }
-    ],
-    cerrarConClickFondo: true,
-    botones: [
-        { texto: "Comenzar", accion: () => iniciarTutorial(), estilos: { background: "#2dd4bf", color: "#042024" }, cerrarAlCompletar: true },
-        { texto: "Cerrar", estilos: { background: "#6c757d" }, cerrarAlCompletar: true }
-    ]
-});
-
----
-
-## 🗂️ Tutorial paso a paso
-
-```javascript
-function mostrarTutorial() {
-    const tarjetas = [
-        { text: "Paso 1", text2: "Descripción paso 1", img: "📦" },
-        { text: "Paso 2", text2: "Descripción paso 2", img: "🛡️" },
-        { text: "Paso 3", text2: "Descripción paso 3", img: "📥" },
-    ];
-    
-    let currentIndex = 0;
-
-    function mostrarTarjeta(index) {
-        const tarjeta = tarjetas[index];
-        MostrarInfoScreen({
-            dialogo: "centro",
-            text: tarjeta.text,
-            text2: tarjeta.text2,
-            img: tarjeta.img,
-            duration: 'infinito',
-            botones: [
-                {
-                    texto: "← Anterior",
-                    accion: () => mostrarTarjeta(index - 1),
-                    estilos: { background: "#6c757d" },
-                    cerrarAlCompletar: true,
-                    disabled: index === 0
-                },
-                {
-                    texto: "Siguiente →",
-                    accion: () => mostrarTarjeta(index + 1),
-                    estilos: { background: "#2dd4bf", color: "#042024" },
-                    cerrarAlCompletar: true,
-                    disabled: index === tarjetas.length - 1
-                }
-            ]
-        });
-    }
-
-    mostrarTarjeta(currentIndex);
+// Buscar notificación específica
+const registro = obtenerNotificacion("mi_id");
+if (registro) {
+    console.log("Notificación encontrada:", registro);
 }
 ```
 
----
+## 🔧 Ejemplos Prácticos
 
-## 🌀 Gestión de múltiples notificaciones
+### Sistema de Login
 
-* Máximo 3 notificaciones visibles.
-* Scroll con la rueda del mouse si hay más de 3.
-* Botón “Cerrar todas” aparece automáticamente si hay exceso de notificaciones.
+**javascript**
 
----
+```
+function usuarioConectado(nombre) {
+    MostrarInfoScreen({
+        etiqueta: "top",
+        emoji: "👤",
+        text: `Bienvenido ${nombre}`,
+        duration: 3000,
+        audio: "./sounds/login.mp3"
+    });
+}
 
-## 🎨 Personalización CSS
-
-```css
-.notification-container       /* Contenedor principal */
-.notification                 /* Notificación individual */
-.notification.visible         /* Estado visible */
-.notification.hiding          /* Animación de salida */
-.etiqueta                     /* Modo etiqueta */
-.notification-buttons         /* Contenedor de botones */
-.notification-button          /* Botones individuales */
-.notification-img             /* Imagen de notificación */
-.notification-svg             /* Iconos SVG */
-.notification-emoji           /* Emoji grande */
-.notification-html            /* Contenido HTML */
-.close-all-btn                /* Botón cerrar todas */
+function usuarioDesconectado() {
+    MostrarInfoScreen({
+        etiqueta: "top",
+        emoji: "🚪",
+        text: "Sesión cerrada",
+        duration: 2000
+    });
+}
 ```
 
----
+### Validación de Formularios
 
-## 💡 Tips y buenas prácticas
+**javascript**
 
-* Usar `img` o `icono` explícitamente para evitar que aparezca el predeterminado sin querer.
-* Combinar texto + icono + audio para notificaciones más atractivas.
-* Para tutoriales largos, usa un array de tarjetas y un índice para navegar, evitando duplicar funciones.
-* Inputs permiten interactuar con el usuario sin abrir un modal extra.
-* Siempre manejar errores en botones o métodos globales para evitar que rompa la notificación.
+```
+function mostrarError(mensaje) {
+    MostrarInfoScreen({
+        etiqueta: "bottom",
+        emoji: "❌",
+        text: mensaje,
+        duration: 4000,
+        fondo: [
+            {
+                color: "#dc354550",
+                blur: "2px"
+            }
+        ]
+    });
+}
 
----
+function mostrarExito(mensaje) {
+    MostrarInfoScreen({
+        etiqueta: "bottom",
+        emoji: "✅",
+        text: mensaje,
+        duration: 3000,
+        fondo: [
+            {
+                color: "#28a74550",
+                blur: "2px"
+            }
+        ]
+    });
+}
+```
 
-## 📖 Ejemplo completo
+### Sistema de Descargas
 
-```javascript
+**javascript**
+
+```
+async function iniciarDescarga(archivo) {
+    const notifId = `descarga_${Date.now()}`;
+  
+    MostrarInfoScreen({
+        text: `📥 Descargando: ${archivo}`,
+        text2: "Preparando archivo...",
+        tareaID: [{ id: notifId, operacion: { crear: true } }],
+        icono: "loader",
+        fondo: [{ color: "#00000040", blur: "3px" }]
+    });
+  
+    try {
+        // Simular descarga
+        await new Promise(resolve => setTimeout(resolve, 2000));
+  
+        MostrarInfoScreen({
+            text: "✅ Descarga completada",
+            text2: `${archivo} está listo`,
+            tareaID: [{
+                id: notifId,
+                operacion: { 
+                    crear: false, 
+                    cerrar: true,
+                    llamar: () => abrirCarpetaDescargas()
+                }
+            }],
+            botones: [
+                {
+                    texto: "Abrir carpeta",
+                    accion: () => abrirCarpetaDescargas(),
+                    cerrarAlCompletar: true
+                }
+            ],
+            duration: 10000
+        });
+  
+    } catch (error) {
+        MostrarInfoScreen({
+            text: "❌ Error en la descarga",
+            text2: error.message,
+            tareaID: [{ id: notifId, operacion: { crear: false, cerrar: true } }],
+            duration: 5000
+        });
+    }
+}
+```
+
+### Chat/Dialogo
+
+**javascript**
+
+```
+function mostrarMensajeChat(usuario, mensaje, avatar, lado = "izquierda") {
+    MostrarInfoScreen({
+        text: `${usuario}:`,
+        text2: mensaje,
+        dialogo: lado,
+        img: avatar,
+        duration: 7000,
+        fondo: lado === "izquierda" ? 
+            [{ color: "#49505730", blur: "2px" }] :
+            [{ color: "#0d6efd30", blur: "2px" }]
+    });
+}
+
+// Uso
+mostrarMensajeChat("Juan", "¡Hola! ¿Cómo estás?", "./avatars/juan.png", "izquierda");
+mostrarMensajeChat("Sistema", "Todo funciona correctamente", null, "derecha");
+```
+
+### Sistema de Progreso
+
+**javascript**
+
+```
+class ProgresoNotificacion {
+    constructor(id, totalPasos) {
+        this.id = id;
+        this.totalPasos = totalPasos;
+        this.pasoActual = 0;
+    }
+  
+    iniciar(titulo) {
+        this.pasoActual = 0;
+        MostrarInfoScreen({
+            text: titulo,
+            text2: `Paso ${this.pasoActual}/${this.totalPasos}`,
+            tareaID: [{ id: this.id, operacion: { crear: true } }],
+            icono: "loader",
+            duration: "infinito"
+        });
+    }
+  
+    siguiente(mensaje) {
+        this.pasoActual++;
+        MostrarInfoScreen({
+            text: mensaje,
+            text2: `Paso ${this.pasoActual}/${this.totalPasos}`,
+            tareaID: [{ id: this.id, operacion: { crear: false, cerrar: false } }]
+        });
+    }
+  
+    completar(mensajeFinal) {
+        MostrarInfoScreen({
+            text: "✅ Completado",
+            text2: mensajeFinal,
+            tareaID: [{ 
+                id: this.id, 
+                operacion: { crear: false, cerrar: true } 
+            }],
+            duration: 3000
+        });
+    }
+}
+
+// Uso
+const progreso = new ProgresoNotificacion("instalacion_123", 3);
+progreso.iniciar("Instalando aplicación...");
+
+setTimeout(() => {
+    progreso.siguiente("Copiando archivos...");
+  
+    setTimeout(() => {
+        progreso.siguiente("Configurando sistema...");
+  
+        setTimeout(() => {
+            progreso.completar("Instalación exitosa");
+        }, 2000);
+    }, 2000);
+}, 2000);
+```
+
+### Inputs en Notificaciones
+
+**javascript**
+
+```
+function solicitarNombre() {
+    MostrarInfoScreen({
+        text: "👤 Registro de usuario",
+        text2: "Por favor ingresa tu nombre:",
+        input: {
+            tipo: "text",
+            placeholder: "Tu nombre completo",
+            id: "inputNombre"
+        },
+        botones: [
+            {
+                texto: "Cancelar",
+                accion: () => console.log("Cancelado"),
+                estilos: { background: "#6c757d" }
+            },
+            {
+                texto: "Continuar",
+                accion: () => {
+                    const input = document.getElementById("inputNombre");
+                    if (input.value.trim()) {
+                        guardarNombre(input.value);
+                        MostrarInfoScreen(`¡Hola ${input.value}!`);
+                    } else {
+                        MostrarInfoScreen("❌ El nombre no puede estar vacío");
+                    }
+                },
+                cerrarAlCompletar: true,
+                estilos: { background: "#0d6efd" }
+            }
+        ],
+        duration: "infinito"
+    });
+}
+
+function solicitarClave() {
+    MostrarInfoScreen({
+        text: "🔒 Ingresa tu contraseña",
+        input: {
+            tipo: "clave",
+            placeholder: "Contraseña segura",
+            id: "inputClave"
+        },
+        botones: [
+            {
+                texto: "Verificar",
+                accion: () => {
+                    const clave = document.getElementById("inputClave").value;
+                    if (clave === "1234") {
+                        MostrarInfoScreen("✅ Contraseña correcta");
+                    } else {
+                        MostrarInfoScreen("❌ Contraseña incorrecta");
+                    }
+                },
+                cerrarAlCompletar: true
+            }
+        ]
+    });
+}
+```
+
+## 🐛 Solución de Problemas
+
+### Problemas Comunes
+
+| Problema                                        | Causa                                      | Solución                                                        |
+| ----------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------- |
+| **Imagen no carga**                       | Ruta incorrecta o imagen no existe         | Verifica la ruta, usa `onerror` para manejar errores           |
+| **Audio no reproduce**                    | Navegador bloquea autoplay                 | Añadir interacción del usuario primero o usar `userGesture`  |
+| **Botones no funcionan**                  | `accion` no es función o string válido | Asegurar que sea función o string como `"miFuncion()"`        |
+| **Notificación no desaparece**           | `duration: "infinito"` sin cerrar        | Usar `tareaID` para cerrar programáticamente                  |
+| **Fondo no se muestra**                   | Error en configuración de `fondo`       | Verificar que sea array y tenga propiedades válidas             |
+| **Multiples notificaciones desordenadas** | Más de 3 notificaciones                   | El sistema añade scroll automático, usar botón "Cerrar todas" |
+
+### Debugging
+
+**javascript**
+
+```
+// Verificar que la función esté cargada
+console.log(typeof MostrarInfoScreen); // Debería ser "function"
+
+// Verificar registro de notificaciones
+console.log("Notificaciones activas:", window.Notificaciones.listar());
+
+// Probar notificación simple
+MostrarInfoScreen("Test de funcionamiento");
+
+// Verificar errores en consola
 MostrarInfoScreen({
-    dialogo: "centro",
-    img: "📚",
-    text: "Centro de Ayuda",
-    text2: "Aprende a usar la librería al máximo",
-    duration: 'infinito',
-    botones: [
-        { texto: "Comenzar", accion: () => iniciarTutorial(), estilos: { background: "#2dd4bf", color: "#042024" }, cerrarAlCompletar: true },
-        { texto: "Cerrar", estilos: { background: "#6c757d" }, cerrarAlCompletar: true }
-    ]
+    text: "Test con error",
+    icono: "icono_inexistente" // Debería mostrar icono predeterminado
 });
 ```
 
+### Manejo de Errores en Botones
+
+**javascript**
+
+```
+MostrarInfoScreen({
+    text: "Acción riesgosa",
+    botones: [{
+        texto: "Ejecutar",
+        accion: async () => {
+            throw new Error("Algo salió mal");
+        },
+        onError: (error) => {
+            MostrarInfoScreen({
+                text: "❌ Error",
+                text2: error.message,
+                duration: 5000
+            });
+        }
+    }]
+});
+```
+
+## 📊 Changelog
+
+### v4.0.0 (Actual)
+
+* ✅ **Sistema completo de notificaciones** con múltiples modos
+* ✅ **Iconos SVG integrados** (pregunta, error, aviso, loader)
+* ✅ **Sistema de fondos** (imágenes, colores, gradientes, blur)
+* ✅ **Gestión por ID** para notificaciones persistentes
+* ✅ **API pública** (`window.Notificaciones`) para control programático
+* ✅ **Botones interactivos** con callbacks y estados de carga
+* ✅ **Inputs en notificaciones** para formularios rápidos
+* ✅ **Modo diálogo** para conversaciones
+* ✅ **Límite automático** de 3 notificaciones visibles
+* ✅ **Scroll inteligente** con rueda del mouse
+* ✅ **Animaciones CSS3** fluidas y personalizables
+* ✅ **Totalmente responsive** en todos los dispositivos
+
+### v3.0.0
+
+* ✅ Sistema básico de notificaciones
+* ✅ Modo etiqueta minimalista
+* ✅ Soporte para imágenes y audio
+* ✅ Botones básicos
+
+### v2.0.0
+
+* ✅ Notificaciones simples con texto
+* ✅ Duración configurable
+* ✅ Animaciones básicas
+
+## 📄 Licencia
+
+MIT License - Ver archivo LICENSE para más detalles.
+
+## 📧 Soporte
+
+Para reportar bugs o solicitar características, por favor usa el [sistema de issues](https://github.com/Mike2Abraham/MostrarInfoScreen/issues).
+
 ---
 
-## 🚀 Changelog
+**Desarrollado con ❤️ para la comunidad de desarrollo web**
 
-**v3.1.0**
-✅ ✅ Ventanas arrastrables con sistema de peso (0-10)
-✅ Normalización bilingüe (español/inglés) para todos los parámetros
-✅ Fondos personalizables con imagen, color, gradiente y blur
-✅ Sistema de identificación (tareaID) para control remoto de notificaciones
-✅ API pública window.Notificaciones
-✅ Soporte para alinear, tamaño, estado, direccion
-
-**v3.0.0**
-✅ Texto múltiple y notificaciones estándar
-✅ Soporte imágenes, audio y emojis
-✅ Botones interactivos y promesas
-✅ Inputs dentro de notificaciones
-✅ Modo etiqueta minimalista
-✅ Gestión de múltiples notificaciones
-✅ Scroll inteligente con rueda del mouse
-✅ Ejecución de métodos globales
-✅ Totalmente responsive y configurable
+*¿Te gusta este proyecto? ¡Dale una estrella en GitHub!*
